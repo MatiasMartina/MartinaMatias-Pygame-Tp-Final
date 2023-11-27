@@ -4,7 +4,7 @@ from models.constantes import ANCHO_VENTANA, ALTO_VENTANA
 
 
 class Jugador:
-    def __init__(self, coordenada_x , coordenada_y, frame_rate = 100, speed_walk = 6, speed_run = 12, gravity = 16, jump = 50):
+    def __init__(self, coordenada_x , coordenada_y, frame_rate = 100, speed_walk = 6, speed_run = 12, gravity = 5, jump = 50):
 
         self.__iddle_r = sf.get_surface_from_sprisheet(".\\assets\\img\\player\\idle\\idle.png",6,1,) 
         self.__iddle_l = sf.get_surface_from_sprisheet(".\\assets\\img\\player\\idle\\idle.png",6,1, flip = True)
@@ -27,6 +27,11 @@ class Jugador:
         self.__jump = jump   #cuantos pixeles de salto
         self.__is_jumping = False
         self.__on_ground = False
+        
+        self.tiempo_referencia = pg.time.get_ticks()
+        self.tiempo_entre_actualizaciones = 1000
+
+
         self.__initial_frame = 0 #Frame inicial que queremos tomar 
         self.__actual_animation = self.__iddle_r #Tomamos la lista entera de surfaces. Contiene cada frame de la animacion
         self.__actual_image_animation = self.__actual_animation[self.__initial_frame] #Definimos cual va a ser el frame de toda la lista que comience la animacion
@@ -35,6 +40,13 @@ class Jugador:
         self.lifes = 5
         self.score = 0
 
+    def actualizar_si_paso_segundo(self):
+        tiempo_actual = pg.time.get_ticks()
+
+        if tiempo_actual - self.tiempo_referencia > self.tiempo_entre_actualizaciones:
+            self.tiempo_referencia = tiempo_actual
+            # Tu código para ejecutar después de que haya pasado un segundo
+            print("Ha pasado un segundo.")
 
     def __set_x_animations_preset(self, move_x, animation_list: list[pg.surface.Surface], look_r:bool):
         """
@@ -59,9 +71,16 @@ class Jugador:
         self.__is_looking_right = look_r
 
     def __gravity_force(self):
-        if self.__rect.y < (ALTO_VENTANA - self.__actual_image_animation.get_height())-100:  #Control de gravedad
-                self.__rect.y += self.__gravity
-                return self.__rect.y
+        if self.__rect.y < (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
+            self.__is_jumping = True
+            self.__on_ground = False
+            return self.__gravity
+        elif self.__rect.y >= (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
+            self.__is_jumping = False
+            self.__on_ground = True
+            return 0
+
+    
 
 
     def __set_and_animations_preset_y(self):
@@ -79,7 +98,8 @@ class Jugador:
         '__move_y' toma el valor del salto en negativo, puesto que controla el movimiento de la imagen de 'main_player'
         sobre el 'eje_y'
         '''
-        self.__move_x = self.__speed_walk if self.__is_looking_right else -self.__speed_walk
+        # self.__move_x = 0
+        self.__move_x = self.__speed_walk/2 if self.__is_looking_right else -self.__speed_walk/2
         '''
         Estamos diciendo que los pixeles de movimiento sobre el 'eje_x' es igual a la velocidad de caminata (__speed_walk en positivo) siempre 
         y cuando el valor de '__is_looking_right' sea true. Ya que, eso garantiza que 'main_personaje' mira a la derecha. 
@@ -99,6 +119,7 @@ class Jugador:
         '''
         Estado de salto en verdadero por que está saltando pero acá hay que cambiar algo, pues, salta y no puede quedar en verdadero, debe cambiar
         '''
+        self.__on_ground = False
         
 
 
@@ -108,10 +129,21 @@ class Jugador:
         match direction_walk:
             case 'Right':
                 look_right = True
-                self.__set_x_animations_preset(self.__speed_walk, self.__walk_r, look_r = look_right)
+                if not self.__is_jumping:
+                    self.__set_x_animations_preset(self.__speed_walk, self.__walk_r, look_r = look_right)
+                    self.__rect.y += self.__gravity_force()
+
+                else:
+                    self.__set_x_animations_preset(self.__speed_walk, self.__walk_r, look_r = look_right)
+                    self.__rect.y += self.__gravity_force()
             case 'Left':
                 look_right = False
-                self.__set_x_animations_preset(-self.__speed_walk, self.__walk_l, look_r = look_right)
+                if not self.__is_jumping:
+                    self.__set_x_animations_preset(-self.__speed_walk, self.__walk_l, look_r = look_right)
+                    self.__rect.y += self.__gravity_force()
+                else:
+                    self.__set_x_animations_preset(-self.__speed_walk, self.__walk_l, look_r = look_right)
+                    self.__rect.y += self.__gravity_force()
 
     def run(self, direction_walk: str = "Right"):
         match direction_walk:
@@ -123,9 +155,16 @@ class Jugador:
                 self.__set_x_animations_preset(-self.__speed_run, self.__run_l, look_r = look_right)
 
     def jump(self):
-        if not self.__is_jumping:
+        if not self.__is_jumping and self.__on_ground:
             self.__set_and_animations_preset_y()
+            print("Esta")
+            self.stop_jump()
             
+    def stop_jump(self):
+        self.__is_jumping = False
+        self.__on_ground = True
+        self.__actual_animation = self.__iddle_r if self.__is_looking_right else self.__iddle_l
+        
         
 
     def stay(self):
@@ -158,49 +197,36 @@ class Jugador:
 
         return pixels_move_x
     
-    def set_edges_limits_y(self):
+    def __set_edges_limits_y(self):
+        
         pixels_move_y = 0
         if self.__move_y > 0:
             pixels_move_y = self.__move_y if self.__rect.y < ALTO_VENTANA - (self.__actual_image_animation.get_height() - 100) else 0
         elif self.__move_y < 0:
-            pixels_move_y = self.__move_y if self.rect.y > 0 else 0
+            pixels_move_y = self.__move_y if self.__rect.y > 0 else 0
         
         return pixels_move_y
     
 
         
-        
-        pass
+    def update_x_y(self):
+        self.__rect.x += self.__set_edges_limits_x()
+        if self.__rect.y >= (ALTO_VENTANA - self.__actual_image_animation.get_height())-100:
+            self.__rect.y += self.__set_edges_limits_y()
+        else: 
+            self.__rect.y += 0;
+    
     def do_movement(self, delta_ms):
         self.__player_move_time += delta_ms
         if self.__player_move_time >= self.__frame_rate:
             self.__player_move_time = 0
-            self.__rect.x += self.__set_edges_limits_x()
-            self.__rect.y += self.__gravity_force()
-            self.__rect.y += self.__move_y
-            # if self.__rect.y < (ALTO_VENTANA - self.__actual_image_animation.get_height())-100:  #Control de gravedad
-            #     self.__rect.y += self.__gravity 
-            #     self.__on_ground = False
-        
-            # if self.__rect.y == (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
-            #     self.__on_ground = True
-                            
-            #     self.__rect.y += self.__gravity
-            # if self.__is_jumping and self.__on_ground:
-            #     if self.__is_looking_right:
-            #         self.__rect.y -= self.__jump
-            #         self.__rect.x += self.__jump/2
-            #         self.__is_jumping = False
-            #         self.__on_ground = False
-            #     else:
-            #         self.__rect.y -= self.__jump
-            #         self.__rect.x -= self.__jump/4
-            #         self.__is_jumping = False
-            #         self.__on_ground = False
-            
-
-        else:
-                self.__rect.y += self.__move_y
+        self.update_x_y()
+        if (self.__is_jumping): #Si está saltando, que deje de saltar y que su capacidad de movimiento sea 0 en eje y.
+                    self.__is_jumping = False
+                    self.__move_y = 0
+                    self.__move_x = 0
+        self.__rect.y += self.__gravity_force()
+        self.actualizar_si_paso_segundo()
                
 
     
@@ -213,14 +239,14 @@ class Jugador:
                 self.__initial_frame += 1
             else:
                 self.__initial_frame = 0
-                if self.__is_jumping:
-                    self.__is_jumping = False
-                    self.__move_y = 0
+                
+                
                     
     
     def update(self, delta_ms):
-        self.do_movement(delta_ms)
         self.do_animation(delta_ms)
+        self.do_movement(delta_ms)
+        self.actualizar_si_paso_segundo()
     
     def draw(self, screen = pg.surface.Surface):
         self.__actual_image_animation = self.__actual_animation[self.__initial_frame]
@@ -229,4 +255,5 @@ class Jugador:
 
 
 
-        pass    
+        
+    

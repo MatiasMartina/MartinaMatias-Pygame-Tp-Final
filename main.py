@@ -1,6 +1,6 @@
 import pygame as pg
 from models.constantes import ALTO_VENTANA, ANCHO_VENTANA, FPS
-from models.player.main_player_copy import Jugador
+from models.player.main_player import Jugador
 screen = pg.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
 pg.init()
 
@@ -11,16 +11,20 @@ back_image = pg.transform.scale(back_image,(ANCHO_VENTANA, ALTO_VENTANA))
 
 
 game_running = True
+is_space_pressed = False
 
-main_player = Jugador(0,0, frame_rate= 100, speed_walk = 20, speed_run= 40)
+main_player = Jugador(0,0, frame_rate= 200, speed_walk = 20, speed_run= 40)
 
 while game_running:
     
 
     lista_eventos = pg.event.get()
     for event in lista_eventos:
-        # if event.type == pg.K_SPACE:
-        #     main_player.jump()
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
+                main_player.jump()
+                
+                
         if event.type == pg.QUIT:
             game_running = False
 
@@ -43,6 +47,7 @@ while game_running:
     screen.blit(back_image, back_image.get_rect())
     delta_ms = clock.tick(FPS)
     main_player.update(delta_ms)
+    print(delta_ms)
     main_player.draw(screen)
 
     pg.display.update()
