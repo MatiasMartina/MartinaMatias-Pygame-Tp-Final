@@ -11,7 +11,7 @@ class Bala(pg.sprite.Sprite):
         self.tiempo_transcurrido_move = 0
         self.original_image = pg.image.load("assets\img\player\spell\\bullet.png").convert()
         
-        #self.image.fill((255, 0, 0))  # Color rojo para la bala (puedes cambiarlo)
+        
         self.rect = pg.Rect(x_init, y_init, width + 40, height + 40)
         self.image = pg.transform.scale(self.original_image, (self.rect.width, self.rect.height))
         self.x = x_init
