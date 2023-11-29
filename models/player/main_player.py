@@ -5,7 +5,20 @@ from bullet import *
 
 class Jugador:
     lista_balas = []
-    def __init__(self, coordenada_x , coordenada_y, frame_rate = 1000, speed_walk = 6, speed_run = 12, gravity = 5, jump = 120):
+    def __init__(self, coordenada_x , coordenada_y, frame_rate = 1000, speed_walk = 6, speed_run = 12, gravity = 8, delta_ms = 300, jump = 250):
+
+        '''
+        self.__iddle_r = sf.get_surface_from_sprisheet("./assets/img/player/idle/idle.png",6,1,) 
+        self.__iddle_l = sf.get_surface_from_sprisheet("./assets/img/player/idle/idle.png",6,1, flip = True)
+        self.__walk_r = sf.get_surface_from_sprisheet("./assets/img/player/walk/Walk.png",7,1,)
+        self.__walk_l = sf.get_surface_from_sprisheet("./assets/img/player/walk/Walk.png",7,1, flip = True)
+        self.__jump_r = sf.get_surface_from_sprisheet("./assets/img/player/jump/Jump.png",11,1,)
+        self.__jump_l = sf.get_surface_from_sprisheet("./assets/img/player/jump/Jump.png",11,1, flip = True)
+        self.__run_r = sf.get_surface_from_sprisheet("./assets/img/player/run/Run.png",8,1,)
+        self.__run_l = sf.get_surface_from_sprisheet("./assets/img/player/run/Run.png",8,1, flip = True)
+        self.__shot_r = sf.get_surface_from_sprisheet("./assets/img/player/shot/shot.png", 7, 1)
+        self.__shot_l = sf.get_surface_from_sprisheet("./assets/img/player/shot/shot.png" ,7, 1, flip=True)
+        '''
 
         self.__iddle_r = sf.get_surface_from_sprisheet(".\\assets\\img\\player\\idle\\idle.png",6,1,) 
         self.__iddle_l = sf.get_surface_from_sprisheet(".\\assets\\img\\player\\idle\\idle.png",6,1, flip = True)
@@ -28,6 +41,7 @@ class Jugador:
         self.__player_move_time = 0 
         self.__player_animation_time = 0
         self.__gravity = gravity #Cuantos pixeles de GRAVEDAD
+        self.delta_ms = delta_ms
         self.__jump = jump   #cuantos pixeles de salto
         
         self.__state = "Stay"
@@ -48,6 +62,9 @@ class Jugador:
         self.lifes = 5
         self.score = 0
         self.__stay = True
+        self.__shot_cooldown = 1000  # Cooldown in milliseconds
+        self.__last_shot_time = pg.time.get_ticks()
+
     def actualizar_si_paso_segundo(self):
         actual_time = pg.time.get_ticks()
 
@@ -81,7 +98,9 @@ class Jugador:
         '''
         self.__actual_animation = animation_list
         self.__is_looking_right = look_r
-    def __gravity_force(self):
+
+    '''
+    def __gravity_force(self.delta_msself):
         if self.__rect.y < (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
             self.__is_jumping = True
             self.__on_ground = False
@@ -90,6 +109,22 @@ class Jugador:
             self.__is_jumping = False
             self.__on_ground = True
             return 0
+    '''
+
+    def __gravity_force(self, delta_ms):
+        gravity_speed = self.__gravity * (delta_ms / self.__frame_rate)
+    
+        if self.__rect.y < (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
+            self.__is_jumping = True
+            self.__on_ground = False
+            return gravity_speed
+        
+        elif self.__rect.y >= (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
+            self.__is_jumping = False
+            self.__on_ground = True
+            return 0
+    
+
     def __set_and_animations_preset_y(self, move_y,animation_list: list[pg.surface.Surface], look_r : bool):
         '''
         ¿Qué hace?
@@ -137,19 +172,19 @@ class Jugador:
                 look_right = True
                 if not self.__is_jumping:
                     self.__set_x_animations_preset(self.__speed_walk, self.__walk_r, look_r = look_right)
-                    self.__rect.y += self.__gravity_force()
+                    self.__rect.y += self.__gravity_force(self.delta_ms)
 
                 else:
                     self.__set_x_animations_preset(self.__speed_walk, self.__walk_r, look_r = look_right)
-                    self.__rect.y += self.__gravity_force()
+                    self.__rect.y += self.__gravity_force(self.delta_ms)
             case 'Left':
                 look_right = False
                 if not self.__is_jumping:
                     self.__set_x_animations_preset(-self.__speed_walk, self.__walk_l, look_r = look_right)
-                    self.__rect.y += self.__gravity_force()
+                    self.__rect.y += self.__gravity_force(self.delta_ms)
                 else:
                     self.__set_x_animations_preset(-self.__speed_walk, self.__walk_l, look_r = look_right)
-                    self.__rect.y += self.__gravity_force()
+                    self.__rect.y += self.__gravity_force(self.delta_ms)
     def run(self, direction_walk: str = "Right"):
         print("Corriendo")
         if self.__is_jumping:
@@ -180,10 +215,56 @@ class Jugador:
     #     self.__is_jumping = False
     #     self.__on_ground = True
     #     self.__actual_animation = self.__iddle_r if self.__is_looking_right else self.__iddle_l
-    
+    # def handle_collision(self, plataforma):
+    #     if self.__rect.colliderect(plataforma.rect):
+    #         # Colisión detectada
+    #         if self.__rect.y -200 < plataforma.rect.y:
+    #             # El jugador está por encima de la plataforma
+    #             self.__on_ground = True
+    #             self.__is_jumping = False
+    #             self.__rect.y = plataforma.rect.y - self.__rect.height
+    #             print("aca wachongui")
+    #         else:
+    #             # El jugador está por debajo de la plataforma
+    #             self.__rect.y = plataforma.rect.y + plataforma.rect.height
+    #             self.__move_y = 0
+    #             print("cuack aca")
+
+    #     # Verificar colisión en el eje x solo si el jugador no está saltando
+    #     if not self.__is_jumping and self.__rect.colliderect(plataforma.rect):
+    #         if self.__rect.x < plataforma.rect.x:
+    #             # El jugador está a la izquierda de la plataforma
+    #             self.__rect.x = plataforma.rect.x - self.__rect.width
+    #         else:
+    #             # El jugador está a la derecha de la plataforma
+    #             self.__rect.x = plataforma.rect.x + plataforma.rect.width
+    def handle_collision(self, plataforma):
+        if self.__is_jumping:
+            if self.__rect.colliderect(plataforma.rect):
+                # Colisión detectada
+                if self.__rect.y + self.__rect.height - 200 < plataforma.rect.y:
+                    # El jugador está por encima de la plataforma
+                    self.__on_ground = True
+                    self.__is_jumping = False
+                    self.__rect.y = plataforma.rect.y - self.__rect.height
+                    print("Está arriba de la plataforma")
+                elif self.__rect.y >= plataforma.rect.y + plataforma.rect.height:
+                    # El jugador está por debajo de la plataforma
+                    self.__rect.y = plataforma.rect.y + plataforma.rect.height
+                    self.__move_y = self.__jump
+                    self.__on_ground = True
+                    print("Está abajo de la plataforma")
+
+            # Verificar colisión en el eje x solo si el jugador no está saltando
+            if not self.__is_jumping and self.__rect.colliderect(plataforma.rect):
+                if self.__rect.x < plataforma.rect.x:
+                    # El jugador está a la izquierda de la plataforma
+                    self.__rect.x = plataforma.rect.x - self.__rect.width
+                else:
+                    # El jugador está a la derecha de la plataforma
+                    self.__rect.x = plataforma.rect.x + plataforma.rect.width
         
-        
-     
+    '''
     def shot(self):
             
             self.__actual_animation = self.__shot_r if self.__is_looking_right else self.__shot_l
@@ -221,7 +302,38 @@ class Jugador:
             # else:
                 
             #     self.__actual_animation =  self.__shot_r if self.__is_looking_right else self.__shot_l
-            
+    '''
+
+    def shot(self):
+        current_time = pg.time.get_ticks()
+
+        if current_time - self.__last_shot_time > self.__shot_cooldown:
+            self.__last_shot_time = current_time
+
+            self.__actual_animation = self.__shot_r if self.__is_looking_right else self.__shot_l
+
+            if self.__is_looking_right:
+                bullet = Bala(
+                    owner=self,
+                    x_init=self.__rect.x - 50,
+                    y_init=self.__rect.y + 80,
+                    x_end=600,
+                    y_end=0,
+                    speed=100,
+                    frame_rate_ms=100,
+                    move_rate_ms=50)
+                self.lista_balas.append(bullet)
+            else:
+                bullet = Bala(
+                    owner=self,
+                    x_init=self.__rect.x + 120,
+                    y_init=self.__rect.y + 80,
+                    x_end=0,
+                    y_end=0,
+                    speed=-100,
+                    frame_rate_ms=100,
+                    move_rate_ms=50)
+                self.lista_balas.append(bullet)        
             
     def stay(self):
         print("stay")
@@ -320,7 +432,7 @@ class Jugador:
         if self.__player_move_time >= self.__frame_rate:
             print("REINICIO DE FRAME. SIGUIENTE MOVIMIENTO EN X E Y")
             self.__player_move_time = 0
-        self.__rect.y += self.__gravity_force()
+        self.__rect.y += self.__gravity_force(self.delta_ms)
         self.update_x_y()
         if (self.__is_jumping): #Si está saltando, que deje de saltar y que su capacidad de movimiento sea 0 en eje y y eje x
                     # self.__is_jumping = False
