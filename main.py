@@ -18,9 +18,9 @@ game_running = True
 main_player = Jugador(0, 0, frame_rate=100, speed_walk=20, speed_run=40)
 plataforma1 = Plataform(300, 400, 100, 20)  
 plataforma2 = Plataform(200, 400, 100, 20)  
-plataforma3 = Plataform(350, 300, 100, 20)  
+# plataforma3 = Plataform(350, 300, 100, 20)  
 plataforma4 = Plataform(700, 400, 100, 20)  
-plataforma5 = Plataform(650, 300, 100, 20)  
+# plataforma5 = Plataform(650, 300, 100, 20)  
 
 
 lista_balas = Jugador.lista_balas
@@ -60,15 +60,15 @@ while game_running:
     main_player.update(delta_ms)
     main_player.handle_collision(plataforma1)
     main_player.handle_collision(plataforma2)
-    main_player.handle_collision(plataforma3)
+    # main_player.handle_collision(plataforma3)
     main_player.handle_collision(plataforma4)
-    main_player.handle_collision(plataforma5)
+    # main_player.handle_collision(plataforma5)
     main_player.draw(screen)
     plataforma1.draw(screen)
     plataforma2.draw(screen)
-    plataforma3.draw(screen)
+    # plataforma3.draw(screen)
     plataforma4.draw(screen)
-    plataforma5.draw(screen)
+    # plataforma5.draw(screen)
     for bullet in lista_balas:
         bullet.update(delta_ms, [], [], main_player)
         bullet.draw(screen)

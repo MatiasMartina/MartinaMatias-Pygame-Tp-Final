@@ -36,17 +36,17 @@ class Bala(pg.sprite.Sprite):
             
             self.rect.x += self.move_x
             self.rect.y += self.move_y
-            self.check_impact(plataform_list, enemy_list, player)
+            # self.check_impact(plataform_list, enemy_list, player)
 
-    def check_impact(self, plataform_list, enemy_list, player):
-        if self.is_active and self.owner != player and self.rect.colliderect(player.rect):
-            print("IMPACTO PLAYER")
-            player.receive_shoot()
-            self.is_active = False
-        for aux_enemy in enemy_list:
-            if self.is_active and self.owner != aux_enemy and self.rect.colliderect(aux_enemy.rect):
-                print("IMPACTO ENEMY")
-                self.is_active = False
+    # def check_impact(self, plataform_list, enemy_list, player):
+    #     if self.is_active and self.owner != player and self.rect.colliderect(player.rect):
+    #         print("IMPACTO PLAYER")
+    #         player.receive_shoot()
+    #         self.is_active = False
+    #     for aux_enemy in enemy_list:
+    #         if self.is_active and self.owner != aux_enemy and self.rect.colliderect(aux_enemy.rect):
+    #             print("IMPACTO ENEMY")
+    #             self.is_active = False
     def draw(self, screen):
         if self.is_active:
             if DEBUG:
