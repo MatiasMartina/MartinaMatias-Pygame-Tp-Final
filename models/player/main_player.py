@@ -5,7 +5,7 @@ from bullet import *
 
 class Jugador:
     lista_balas = []
-    def __init__(self, coordenada_x , coordenada_y, frame_rate = 1000, speed_walk = 6, speed_run = 12, gravity = 8, delta_ms = 300, jump = 250):
+    def __init__(self, coordenada_x , coordenada_y, frame_rate = 1000, speed_walk = 6, speed_run = 12, gravity = 28, delta_ms = 300, jump = 150):
 
         
 
@@ -106,17 +106,7 @@ class Jugador:
 
         self.__is_looking_right = look_r
 
-    '''
-    def __gravity_force(self.delta_msself):
-        if self.__rect.y < (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
-            self.__is_jumping = True
-            self.__on_ground = False
-            return self.__gravity
-        elif self.__rect.y >= (ALTO_VENTANA - self.__actual_image_animation.get_height()) - 100:
-            self.__is_jumping = False
-            self.__on_ground = True
-            return 0
-    '''
+  
     
     def __gravity_force(self, delta_ms):
         gravity_speed = self.__gravity * (delta_ms / self.__frame_rate)
@@ -135,7 +125,7 @@ class Jugador:
                 return 0
         
 
-    def __set_and_animations_preset_y(self, move_y,animation_list: list[pg.surface.Surface], look_r : bool):
+    def __set_and_animations_preset_y(self, move_y,animation_list: list[pg.surface.Surface], look_r : bool, delta_ms):
         '''
         ¿Qué hace?
         El método '__set_and_animations_preset' permite modificar la posicion horiontal en el eje y del 'main_player'
@@ -145,7 +135,7 @@ class Jugador:
         ¿Qué devuelve?
         N/A
         '''
-        self.__move_y -= self.__jump
+        self.__move_y -= self.__jump *( delta_ms / self.__frame_rate)
         '''
         '__move_y' toma el valor del salto en negativo, puesto que controla el movimiento de la imagen de 'main_player'
         sobre el 'eje_y'
@@ -168,7 +158,7 @@ class Jugador:
         '''
 
         #aaaa
-        self.__initial_frame = 0
+        
         # if self.__initial_frame > len(self.__actual_animation) - 1:
         #     self.__actual_animation = self.__iddle_r if self.__is_looking_right else self.__iddle_l
         '''
@@ -178,6 +168,7 @@ class Jugador:
         '''
         Estado de salto en verdadero por que está saltando pero acá hay que cambiar algo, pues, salta y no puede quedar en verdadero, debe cambiar
         '''
+        self.__on_platform = False
         self.__on_ground = False
   
     def walk(self, direction_walk: str = "Right"):
@@ -212,19 +203,19 @@ class Jugador:
                 case 'Left':
                     look_right = False
                     self.__set_x_animations_preset(-self.__speed_run, self.__run_l, look_r = look_right)
-    def jump(self):
+    def jump(self, delta_ms):
         ("Saltando")
         # if not self.__is_jumping:
         #     print("NO ESTÁ SALTANDO")
-        if self.__on_ground or self.__on_platform:
+        if self.__on_ground:
                 self.__on_ground = True
-                self.__on_platform = False
+                self.__on_platform = True
                 if  self.__is_looking_right:
-                    self.__set_and_animations_preset_y(-self.__jump, self.__jump_r, True)
+                    self.__set_and_animations_preset_y(-self.__jump, self.__jump_r, True, delta_ms)
                     print("EEEEEEEENTROOOOOOOOOOOO ACAAAAAAAAAAAAA")
                     
                 else:
-                    self.__set_and_animations_preset_y(-self.__jump, self.__jump_l, False)
+                    self.__set_and_animations_preset_y(-self.__jump, self.__jump_l, False, delta_ms)
                     "Entró acá Falseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 
 
@@ -232,7 +223,7 @@ class Jugador:
         is_on_platform = False
         
          # Colisión detectada
-        if self.__rect.y >= GROUND_LEVEL:
+        if self.__rect.y >= self.__ground_rect.y:
             # El piso del programa, acá hay que hacer el piso del programa
             is_on_platform = True
         else:
@@ -240,83 +231,11 @@ class Jugador:
                     if self.ground_collition_rect.colliderect(platform.rect):
                         print("COLISIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIONNN")
                         is_on_platform = True
+                        self.__is_jumping = False
+                        self.__on_ground = True
                         break
         return is_on_platform
         
-        
-
-
-    #     return is_on_platform 
-    # def handle_collision(self, plataforma):
-    #     # if self.__is_jumping:
-    #     if self.__rect.y + self.__rect.height - 200 < plataforma.rect.y:
-    #         if self.ground_collition_rect.colliderect(plataforma.rect):
-    #             # self.__is_jumping =  False
-    #             # print("ColisionColisionColisionColisionColisionColisionColision")
-    #             # # Colisión detectada
-    #             # # if self.__rect.y + self.__rect.height - 200 < plataforma.rect.y:
-    #             #      # Colisión detectada
-    #             # self.__initial_frame = 0
-    #             # self.__actual_animation = self.__iddle_r if self.__is_looking_right else self.__iddle_l
-    #             self.__on_ground = True
-    #             self.__on_platform = True
-                
-    #             self.__rect.y = plataforma.rect.y - self.__rect.height
-                
-    #             print("Está arriba de la plataforma")
-    #         else:
-    #             self.__on_platform = False
-    #     elif self.__rect.y >= plataforma.rect.y + plataforma.rect.height:
-    #                 # El jugador está por debajo de la plataforma
-    #                 self.__rect.y = plataforma.rect.y + plataforma.rect.height
-    #                 self.__move_y = self.__jump
-    #                 self.__on_ground = True
-    #                 self.__on_platform = False
-    #                 print("Está abajo de la plataforma")
-
-        # if self.__is_jumping:    #Verificar colisión en el eje x solo si el jugador no está saltando
-        #     if not self.__is_jumping and self.ground_collition_rect.colliderect(plataforma.rect):
-        #         if (self.__rect.x/2) < plataforma.rect.x:
-        #             # El jugador está a la izquierda de la plataforma
-        #             self.collition_rect.x = plataforma.rect.x - self.collition_rect.width
-        #         else:
-        #             # El jugador está a la derecha de la plataforma
-        #             self.collition_rect.x = plataforma.rect.x + plataforma.rect.width                   
-    # def handle_collision(self, plataforma):
-    #     if self.__is_jumping:
-    #         if self.ground_collition_rect.colliderect(plataforma.rect):
-    #             self.__is_jumping =  False
-    #             print("ColisionColisionColisionColisionColisionColisionColision")
-    #             # Colisión detectada
-    #             if self.__rect.y + self.__rect.height - 200 < plataforma.rect.y:
-    #                  # Colisión detectada
-    #                 self.__on_ground = True
-    #                 self.__on_platform = True
-    #                 self.__is_jumping = False
-    #                 self.__rect.y = plataforma.rect.y - self.__rect.height
-    #                 print("Está arriba de la plataforma")
-    #             elif self.__rect.y >= plataforma.rect.y + plataforma.rect.height:
-    #                 # El jugador está por debajo de la plataforma
-    #                 self.__rect.y = plataforma.rect.y + plataforma.rect.height
-    #                 self.__move_y = self.__jump
-    #                 self.__on_ground = True
-    #                 self.__on_platform = False
-    #                 print("Está abajo de la plataforma")
-
-    #     if self.__is_jumping:    #Verificar colisión en el eje x solo si el jugador no está saltando
-    #         if not self.__is_jumping and self.ground_collition_rect.colliderect(plataforma.rect):
-    #             if (self.__rect.x/2) < plataforma.rect.x:
-    #                 # El jugador está a la izquierda de la plataforma
-    #                 self.collition_rect.x = plataforma.rect.x - self.collition_rect.width
-    #             else:
-    #                 # El jugador está a la derecha de la plataforma
-    #                 self.collition_rect.x = plataforma.rect.x + plataforma.rect.width  
-                  
-
-    
-        
-    
-
     def shot(self):
         current_time = pg.time.get_ticks()
 
@@ -356,20 +275,24 @@ class Jugador:
         if self.__on_ground or self.__on_platform:
             if not (self.__is_jumping or self.__is_shoting):
                 if self.__actual_animation not in (self.__shot_r, self.__shot_l): 
-                    self.__initial_frame = 0 
+                    
                     self.__actual_animation = self.__iddle_r if self.__is_looking_right else self.__iddle_l
+                    self.__initial_frame = 0 
                     print("Quieto iddle")
                     self.__move_x = 0
                     self.__move_y = 0
             
             elif self.__is_shoting:
-                self.__actual_animation = self.__shot_r if self.__is_looking_right else self.__shot_l
+                if self.__actual_animation != self.__shot_r if self.__is_looking_right else self.__shot_l:
+                    self.__actual_animation  != self.__shot_r if self.__is_looking_right else self.__shot_l
         else:
             if not self.__on_ground and self.__is_shoting:
                 print("acá no entra mucho tiempo me pareceeeeeeeeeeeeeeeeeeeeeeee")
                 self.__actual_animation = self.__shot_r if self.__is_looking_right else self.__shot_l
+                
             else:
                 self.__actual_animation = self.__jump_r if self.__is_looking_right else self.__jump_l
+                
             
         
                 
@@ -415,7 +338,7 @@ class Jugador:
         
     def update_x_y(self):
         self.__rect.x += self.__set_edges_limits_x()
-        if self.__rect.y >= (ALTO_VENTANA - self.__actual_image_animation.get_height())-100:
+        if self.__on_ground or self.__on_platform:
             self.__rect.y += self.__set_edges_limits_y()
             print(f"Posicion eje y: {self.__rect.y}")
             print(f"Posicion eje x: {self.__rect.x}")
