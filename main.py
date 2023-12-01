@@ -11,7 +11,7 @@ clock = pg.time.Clock()
 back_image = pg.image.load('assets\\img\\background\\background1.png')
 back_image = pg.transform.scale(back_image, (ANCHO_VENTANA, ALTO_VENTANA))
 
-lista_balas = []
+
 
 game_running = True
 
@@ -24,7 +24,7 @@ plataforma4 = Plataform(700, 400, 100, 20)
 
 
 lista_balas = Jugador.lista_balas
-
+lista_plataformas = [plataforma1, plataforma2, plataforma4]
 
 while game_running:
     lista_eventos = pg.event.get()
@@ -57,11 +57,11 @@ while game_running:
 
     screen.blit(back_image, back_image.get_rect())
     delta_ms = clock.tick(FPS)
-    main_player.update(delta_ms)
-    main_player.handle_collision(plataforma1)
-    main_player.handle_collision(plataforma2)
-    # main_player.handle_collision(plataforma3)
-    main_player.handle_collision(plataforma4)
+    main_player.update(delta_ms, lista_plataformas)
+    # main_player.handle_collision(plataforma1)
+    # main_player.handle_collision(plataforma2)
+    # # main_player.handle_collision(plataforma3)
+    # main_player.handle_collision(plataforma4)
     # main_player.handle_collision(plataforma5)
     main_player.draw(screen)
     plataforma1.draw(screen)
