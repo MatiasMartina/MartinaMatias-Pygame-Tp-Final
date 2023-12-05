@@ -20,7 +20,7 @@ class Enemy(pg.sprite.Sprite):
         self.__count = 0
         self.__initial_frame = 0
         self.__lives = 5
-        self.__score = 0
+        self.score_value = 200
         self.__move_x = 0
         self.__move_y = 0
         self.__speed_walk = speed_walk
@@ -80,6 +80,7 @@ class Enemy(pg.sprite.Sprite):
         self.__initial_frame = 0
         self.__is_active = False
         self.kill()
+        return self.score_value
 
     def handle_enemy_movement(self):
         self.__is_fall = False
@@ -98,7 +99,7 @@ class Enemy(pg.sprite.Sprite):
         else:
             self.__count = 0
 
-    def do_movement(self, delta_ms, plataform_list, bullet_list):
+    def do_movement(self, delta_ms, plataform_list, bullet_list, enemies_list, player):
         self.__tiempo_transcurrido_move += delta_ms
 
         if self.__tiempo_transcurrido_move >= self.__move_rate_ms:
@@ -109,9 +110,9 @@ class Enemy(pg.sprite.Sprite):
                     self.__is_fall = True
                     self.change_y(self.__gravity)
 
-            if self.detect_shoot_contact(bullet_list):
+            if self.detect_shoot_contact(bullet_list, enemies_list, player):
                 print("Enemy hit by bullet!")
-                self.handle_enemy_hit()
+                score = self.handle_enemy_hit()
             else:
                 self.handle_enemy_movement()
 
@@ -127,7 +128,7 @@ class Enemy(pg.sprite.Sprite):
                     break
         return retorno
 
-    def detect_shoot_contact(self, bullet_list):
+    def detect_shoot_contact(self, bullet_list, enemies_list, player):
         
         for bullet in bullet_list:
             print(f"Enemy Rect: {self.rect}")
@@ -136,11 +137,23 @@ class Enemy(pg.sprite.Sprite):
                 bullet.kill()
                 bullet_list.remove(bullet)
                 self.__shoot_contact = True
+                player.score += self.score_value
+                if self in enemies_list:
+                    enemies_list.remove(self)
                 print("Bullet hit the enemy!")
                 break
             else:
                 self.__shoot_contact = False
+        # self.kill()
         return self.__shoot_contact
+
+    def detect_player_colision(self, player):
+        if self.rect.colliderect(player.collition_rect):
+            player.current_lifes -= 1
+                                
+                    
+                    
+                
 
     def do_animation(self, delta_ms):
         self.__tiempo_transcurrido_animation += delta_ms
@@ -153,7 +166,7 @@ class Enemy(pg.sprite.Sprite):
                 self.__initial_frame = 0
         print(f"Animacion: {self.__initial_frame} de {len(self.__animation)} ")
 
-    def enemies_generator(self, all_enemies, delta_ms):
+    def enemies_generator(self, enemies_list, delta_ms):
         self.__tiempo_transcurrido += delta_ms
         print("Enemy Generator!")
 
@@ -162,12 +175,12 @@ class Enemy(pg.sprite.Sprite):
         new_enemy_y = 410
         new_enemy = Enemy(new_enemy_x, new_enemy_y, self.__speed_walk, self.__gravity, self.__jump_power,
                           self.__frame_rate_ms, self.__move_rate_ms, self.__jump_height)
-        all_enemies.append(new_enemy)
+        enemies_list.append(new_enemy)
         print("New enemy created!")
 
-    def update(self, delta_ms, plataform_list, bullet_list):
+    def update(self, delta_ms, plataform_list, bullet_list, enemies_list, player):
         if not self.__is_dead and self.__is_active:
-            self.do_movement(delta_ms, plataform_list, bullet_list)
+            self.do_movement(delta_ms, plataform_list, bullet_list, enemies_list, player)
             self.do_animation(delta_ms)
             print(f"is dead? : {self.__is_dead}")
             print(f"is active? : {self.__is_active}")
@@ -190,3 +203,19 @@ class Enemy(pg.sprite.Sprite):
 
     def receive_shoot(self):
         self.__lives -= 1
+
+    @property
+    def get_score_value(self):
+        return self.score_value
+    
+    @property
+    def get_is_active(self):
+        return self.__is_active
+    
+    @property
+    def get_is_dead(self):
+        return self.__is_dead
+    
+    @property
+    def get_shoot_contact(self):
+        return self.__shoot_contact

@@ -2,7 +2,7 @@ import pygame as pg
 from models.auxiliar import SurfaceManager as sf
 from models.constantes import ANCHO_VENTANA, ALTO_VENTANA, GROUND_COLLIDE_H, GROUND_LEVEL
 from bullet import *
-
+from enemigo import Enemy
 class Jugador:
     lista_balas = []
     def __init__(self, coordenada_x , coordenada_y, frame_rate = 1000, speed_walk = 6, speed_run = 12, gravity = 28, delta_ms = 300, jump = 150):
@@ -109,7 +109,17 @@ class Jugador:
 
         self.__is_looking_right = look_r
 
-  
+    # def handle_score(self, enemies_list, bullet_list):
+    #     for enemy in enemies_list:
+    #         if enemy.get_shoot_contact == True:
+    #             print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    #             self.score += enemy.handle_enemy_hit()
+
+            
+    
+
+
+    
     
     def __gravity_force(self, delta_ms):
         gravity_speed = self.__gravity * (delta_ms / self.__frame_rate)
@@ -224,6 +234,7 @@ class Jugador:
    
     def handle_enemy_collision(self, enemy):
         if self.collition_rect.colliderect(enemy._collition_rect):
+            print("888888888888888888888888888888888888888999999999999999999999999999999999999999999999988888888888888888888888888888888888888888")
             # El jugador ha tocado al enemigo
             self.current_lifes -= 1
             self.current_lifes = max(0, self.current_lifes)  # Limitar a 0 vidas como mínimo
@@ -401,7 +412,7 @@ class Jugador:
 
                     
     
-    def update(self, delta_ms, platform):
+    def update(self, delta_ms, platform, enemies_list, bullet_list):
         # print("Estados:")
         # print(f"En tierra: {self.__on_ground}")
         # print(f"Plataforma: {self.__on_platform}")
@@ -412,6 +423,8 @@ class Jugador:
         self.do_animation(delta_ms)
         self.do_movement(delta_ms, platform)
         self.actualizar_si_paso_segundo()
+        # self.handle_score(enemies_list, bullet_list)
+        
     
     def draw(self, screen = pg.surface.Surface):
         if(DEBUG):
@@ -432,7 +445,10 @@ class Jugador:
 
     
     
-
+    @property
+    def get_score_value(self):
+        return self.__score
+    
 
         
     

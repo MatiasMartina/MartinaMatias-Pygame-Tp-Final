@@ -34,7 +34,7 @@ class Bala(pg.sprite.Sprite):
             if self._is_active:
                 self.rect.x += self.move_x
                 self.rect.y += self.move_y
-                # self.check_impact(plataform_list, enemy_list, player)
+                self.check_impact(plataform_list, enemy_list, player)
             else:
                 
                 if not self.explosion_played:
@@ -49,11 +49,11 @@ class Bala(pg.sprite.Sprite):
             
             print(f"is active?{self._is_active}")
 
-    # def check_impact(self, plataform_list, enemy_list, player):
-    #     for aux_enemy in enemy_list:    
-    #         if self._is_active and self.owner != aux_enemy and self.rect.colliderect(aux_enemy.rect):
-    #             print("IMPACTO ENEMYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
-    #             self.kill()
+    def check_impact(self, plataform_list, enemy_list, player):
+        for aux_enemy in enemy_list:    
+            if self._is_active and self.owner != aux_enemy and self.rect.colliderect(aux_enemy.rect):
+                print("IMPACTO ENEMYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+                self.kill()
     # def check_impact(self, plataform_list, enemy_list, player):
     #     for aux_enemy in enemy_list:
     #         if self._is_active and self.owner != aux_enemy and self.rect.colliderect(aux_enemy.rect):

@@ -1,4 +1,4 @@
-
+from chronometer import * 
 import pygame as pg
 from enemigo import * 
 from bullet import *
@@ -35,9 +35,9 @@ plataforma10 = Plataform(1000, 300, 100, 20)
 
 lista_balas = Jugador.lista_balas
 lista_plataformas = [plataforma1, plataforma2, plataforma3, plataforma4, plataforma5, plataforma7, plataforma8, plataforma9, plataforma10]
-
+chronometer = Chronometer(60)
 tiempo_transcurrido_generacion = 0
-intervalo_generacion_enemigo = 3000 # 5000 ms (5 segundos)
+intervalo_generacion_enemigo = 5000 # 5000 ms (5 segundos)
 
 while game_running:
     lista_eventos = pg.event.get()
@@ -70,12 +70,16 @@ while game_running:
     screen.blit(back_image, back_image.get_rect())
     delta_ms = clock.tick(FPS)
 
+    
+    chronometer.update()
+    chronometer.draw(screen)
 
-    enemigo.update(delta_ms,lista_plataformas, lista_balas)
+    enemigo.update(delta_ms,lista_plataformas, lista_balas, lista_enemigos,main_player)
     enemigo.draw(screen, lista_balas)
     
-    main_player.update(delta_ms, lista_plataformas)
+    main_player.update(delta_ms, lista_plataformas, lista_enemigos,lista_balas)
     main_player.draw(screen)
+    
     
         
     for bullet in lista_balas:
@@ -84,12 +88,13 @@ while game_running:
 
     for enemy in lista_enemigos:
         if enemy in lista_enemigos:
-            main_player.handle_enemy_collision(enemy)
+            # main_player.handle_enemy_collision(enemy)
 
-            enemy.update(delta_ms, lista_plataformas, lista_balas)
+            enemy.update(delta_ms, lista_plataformas, lista_balas, lista_enemigos, main_player)
             enemy.draw(screen, lista_balas)
     for plataforma in lista_plataformas:
         plataforma.draw(screen)
+
 
     tiempo_transcurrido_generacion += delta_ms
     if tiempo_transcurrido_generacion >= intervalo_generacion_enemigo:
@@ -97,8 +102,12 @@ while game_running:
         enemigo.enemies_generator(lista_enemigos, 0)
     
     text = font.render(f'Vidas: {main_player.current_lifes}', True, (255, 255, 255))
+    # text_score = font.render(f'Puntaje: {main_player.score}', True, (255, 255, 255))
     screen.blit(text, (10, 10))  
-
+    font = pg.font.Font(None, 36)  # Fuente y tamaño del texto
+    score_text = font.render(f"Score: {main_player.score}", True, (255, 255, 255))  # Crear el objeto de texto
+    screen.blit(score_text, (50, 50))  # Mostrar el texto en la posición deseada
+    # screen.blit(text_score, (10, 50))
     pg.display.update()
 
 pg.quit()
