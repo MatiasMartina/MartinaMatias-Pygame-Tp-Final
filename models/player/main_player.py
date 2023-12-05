@@ -109,17 +109,6 @@ class Jugador:
 
         self.__is_looking_right = look_r
 
-    # def handle_score(self, enemies_list, bullet_list):
-    #     for enemy in enemies_list:
-    #         if enemy.get_shoot_contact == True:
-    #             print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    #             self.score += enemy.handle_enemy_hit()
-
-            
-    
-
-
-    
     
     def __gravity_force(self, delta_ms):
         gravity_speed = self.__gravity * (delta_ms / self.__frame_rate)
@@ -232,13 +221,15 @@ class Jugador:
                     "Entró acá Falseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 
    
-    def handle_enemy_collision(self, enemy):
-        if self.collition_rect.colliderect(enemy._collition_rect):
-            print("888888888888888888888888888888888888888999999999999999999999999999999999999999999999988888888888888888888888888888888888888888")
-            # El jugador ha tocado al enemigo
-            self.current_lifes -= 1
-            self.current_lifes = max(0, self.current_lifes)  # Limitar a 0 vidas como mínimo
-            print(f'Vidas restantes: {self.current_lifes}')
+    # def handle_enemy_collision(self, enemy, enemies_list):
+    #     if self.collition_rect.colliderect(enemy._collition_rect):
+    #         print("888888888888888888888888888888888888888999999999999999999999999999999999999999999999988888888888888888888888888888888888888888")
+    #         # El jugador ha tocado al enemigo
+    #         self.current_lifes -= 1
+    #         self.current_lifes = max(0, self.current_lifes)  # Limitar a 0 vidas como mínimo
+    #         print(f'Vidas restantes: {self.current_lifes}')
+    #         if enemy in enemies_list:
+    #             enemies_list.remove(enemy)
     
     
     def __is_on_platform(self, plataforma):
@@ -412,7 +403,7 @@ class Jugador:
 
                     
     
-    def update(self, delta_ms, platform, enemies_list, bullet_list):
+    def update(self, delta_ms, platform, enemies_list, bullet_list,enemy):
         # print("Estados:")
         # print(f"En tierra: {self.__on_ground}")
         # print(f"Plataforma: {self.__on_platform}")
@@ -423,6 +414,7 @@ class Jugador:
         self.do_animation(delta_ms)
         self.do_movement(delta_ms, platform)
         self.actualizar_si_paso_segundo()
+        # self.handle_enemy_collision(enemy, enemies_list)
         # self.handle_score(enemies_list, bullet_list)
         
     

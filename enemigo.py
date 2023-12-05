@@ -109,12 +109,30 @@ class Enemy(pg.sprite.Sprite):
                 if self.__move_y == 0:
                     self.__is_fall = True
                     self.change_y(self.__gravity)
-
+            if self.detect_player_colision(player, enemies_list):
+                self.kill()
+                
             if self.detect_shoot_contact(bullet_list, enemies_list, player):
                 print("Enemy hit by bullet!")
-                score = self.handle_enemy_hit()
+                self.handle_enemy_hit()
+                
             else:
                 self.handle_enemy_movement()
+
+    # def handle_enemy_colision(self,bullet_list, enemies_list, player):
+    #     if self.detect_shoot_contact(bullet_list, enemies_list, player):
+    #             print("Enemy hit by bullet!")
+    #             self.handle_enemy_hit()
+    #     elif self._collition_rect.colliderect(player.collition_rect):
+    #         self.detect_player_colision(player, enemies_list )
+            
+
+    #     else:
+    #         self.handle_enemy_movement()
+        
+        
+
+
 
     def is_on_plataform(self, plataform_list):
         retorno = False
@@ -147,10 +165,13 @@ class Enemy(pg.sprite.Sprite):
         # self.kill()
         return self.__shoot_contact
 
-    def detect_player_colision(self, player):
-        if self.rect.colliderect(player.collition_rect):
+    def detect_player_colision(self, player, enemies_list):
+        if self.rect.colliderect(player.collition_rect):    
             player.current_lifes -= 1
-                                
+            self.kill()
+            if self in enemies_list:
+                enemies_list.remove(self)   
+            return True                        
                     
                     
                 
@@ -179,9 +200,11 @@ class Enemy(pg.sprite.Sprite):
         print("New enemy created!")
 
     def update(self, delta_ms, plataform_list, bullet_list, enemies_list, player):
+        # self.handle_enemy_colision(bullet_list, enemies_list, player)
         if not self.__is_dead and self.__is_active:
             self.do_movement(delta_ms, plataform_list, bullet_list, enemies_list, player)
             self.do_animation(delta_ms)
+            
             print(f"is dead? : {self.__is_dead}")
             print(f"is active? : {self.__is_active}")
         else:

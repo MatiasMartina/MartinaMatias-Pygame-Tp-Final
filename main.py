@@ -27,17 +27,17 @@ plataforma3 = Plataform(350, 300, 100, 20)
 plataforma4 = Plataform(700, 400, 100, 20)
 plataforma5 = Plataform(650, 300, 100, 20)
 # plataforma6 = Plataform(200, 500, 100, 20)
-plataforma7 = Plataform(400, 450, 100, 20)
+# plataforma7 = Plataform(400, 450, 100, 20)
 plataforma8 = Plataform(600, 400, 100, 20)
 plataforma9 = Plataform(800, 350, 100, 20)
 plataforma10 = Plataform(1000, 300, 100, 20)
 
 
 lista_balas = Jugador.lista_balas
-lista_plataformas = [plataforma1, plataforma2, plataforma3, plataforma4, plataforma5, plataforma7, plataforma8, plataforma9, plataforma10]
+lista_plataformas = [plataforma1, plataforma2, plataforma3, plataforma4, plataforma5, plataforma8, plataforma9, plataforma10]
 chronometer = Chronometer(60)
 tiempo_transcurrido_generacion = 0
-intervalo_generacion_enemigo = 5000 # 5000 ms (5 segundos)
+intervalo_generacion_enemigo = 10000 # 5000 ms (5 segundos)
 
 while game_running:
     lista_eventos = pg.event.get()
@@ -77,7 +77,7 @@ while game_running:
     enemigo.update(delta_ms,lista_plataformas, lista_balas, lista_enemigos,main_player)
     enemigo.draw(screen, lista_balas)
     
-    main_player.update(delta_ms, lista_plataformas, lista_enemigos,lista_balas)
+    main_player.update(delta_ms, lista_plataformas, lista_enemigos,lista_balas, enemigo)
     main_player.draw(screen)
     
     
