@@ -72,21 +72,22 @@ while game_running:
 
 
     enemigo.update(delta_ms,lista_plataformas, lista_balas)
-    enemigo.draw(screen)
+    enemigo.draw(screen, lista_balas)
     
     main_player.update(delta_ms, lista_plataformas)
     main_player.draw(screen)
     
-    for enemy in lista_enemigos:
-        main_player.handle_enemy_collision(enemy)
-
-        enemy.update(delta_ms, lista_plataformas, lista_balas)
-        enemy.draw(screen)
         
     for bullet in lista_balas:
         bullet.update(delta_ms, lista_plataformas, lista_enemigos, main_player)
-        bullet.draw(screen)
+        bullet.draw(screen, lista_balas)
 
+    for enemy in lista_enemigos:
+        if enemy in lista_enemigos:
+            main_player.handle_enemy_collision(enemy)
+
+            enemy.update(delta_ms, lista_plataformas, lista_balas)
+            enemy.draw(screen, lista_balas)
     for plataforma in lista_plataformas:
         plataforma.draw(screen)
 
@@ -96,7 +97,7 @@ while game_running:
         enemigo.enemies_generator(lista_enemigos, 0)
     
     text = font.render(f'Vidas: {main_player.current_lifes}', True, (255, 255, 255))
-    screen.blit(text, (10, 10))  # Ajusta la posición según tus necesidades
+    screen.blit(text, (10, 10))  
 
     pg.display.update()
 

@@ -64,7 +64,7 @@ class Jugador:
 
         
 
-        self.collition_rect = pg.Rect(self.__move_x+self.__rect.width/12,self.__move_y,self.__rect.width/12,self.__rect.height)
+        self.collition_rect = pg.Rect(self.__move_x+self.__rect.width/12,self.__move_y,self.__rect.width/12,self.__rect.height/2)
         self.ground_collition_rect = pg.Rect(self.collition_rect)
         self.ground_collition_rect.height = GROUND_COLLIDE_H
         self.ground_collition_rect.y = self.__move_y + self.__rect.height - GROUND_COLLIDE_H
@@ -74,7 +74,7 @@ class Jugador:
 
         if actual_time - self.__reference_time > self.__time_between_updates:
             self.__reference_time = actual_time
-            # Tu código para ejecutar después de que haya pasado un segundo
+            
             return False
         else:
             
@@ -302,11 +302,11 @@ class Jugador:
             if not self.__on_ground and self.__is_shooting:
                 print("acá no entra mucho tiempo me pareceeeeeeeeeeeeeeeeeeeeeeee")
                 self.__actual_animation = self.__shot_r if self.__is_looking_right else self.__shot_l
-                
+                self.__initial_frame = 0 
                 
             else:
                 self.__actual_animation = self.__jump_r if self.__is_looking_right else self.__jump_l
-               
+                self.__initial_frame = 0 
             
         
                 
