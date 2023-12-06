@@ -1,3 +1,4 @@
+from items import *
 from chronometer import * 
 import pygame as pg
 from enemigo import * 
@@ -17,11 +18,19 @@ back_image = pg.transform.scale(back_image, (ANCHO_VENTANA, ALTO_VENTANA))
 
 game_running = True
 
-main_player = Jugador(0, 0, frame_rate=200, speed_walk=20, speed_run=40)
+main_player = Jugador(0, 0, frame_rate=200, speed_walk=15, speed_run=20)
 enemigo = Enemy(x=450,y=400,speed_walk=6,gravity=14,jump_power=30,frame_rate_ms=150,move_rate_ms=50,jump_height=140,p_scale=0.08,interval_time_jump=300)
 lista_enemigos = [enemigo]
+item_box = ItemBox('Time', 400, 410)
+item_box2= ItemBox('Portal', 150, 60)
+item_box3= ItemBox('Heart', 700, 410)
+item_box4= ItemBox('Book', 700, 330)
+item_box5= ItemBox('Boot', 300, 330)
+item_box6 = ItemBox('Key', 900, 400)
 
-plataforma1 = Plataform(300, 400, 100, 20)
+
+lista_items = [item_box, item_box2, item_box3, item_box4, item_box5, item_box6]
+plataforma1 = Plataform(100, 100, 100, 20)
 plataforma2 = Plataform(200, 400, 100, 20)
 plataforma3 = Plataform(350, 300, 100, 20)
 plataforma4 = Plataform(700, 400, 100, 20)
@@ -95,11 +104,15 @@ while game_running:
     for plataforma in lista_plataformas:
         plataforma.draw(screen)
 
+    for item in lista_items:
+        print(f"Item Type: {item.item_type}, Position: ({item.coor_x}, {item.coor_y})")
+        item.update(main_player, lista_items, chronometer,screen, 700,500)
+        item.draw(screen)
 
-    tiempo_transcurrido_generacion += delta_ms
-    if tiempo_transcurrido_generacion >= intervalo_generacion_enemigo:
-        tiempo_transcurrido_generacion = 0
-        enemigo.enemies_generator(lista_enemigos, 0)
+    # tiempo_transcurrido_generacion += delta_ms
+    # if tiempo_transcurrido_generacion >= intervalo_generacion_enemigo:
+    #     tiempo_transcurrido_generacion = 0
+    #     enemigo.enemies_generator(lista_enemigos, 0)
     
     text = font.render(f'Vidas: {main_player.current_lifes}', True, (255, 255, 255))
     # text_score = font.render(f'Puntaje: {main_player.score}', True, (255, 255, 255))

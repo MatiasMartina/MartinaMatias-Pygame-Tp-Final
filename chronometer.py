@@ -26,3 +26,6 @@ class Chronometer:
 
     def get_time(self)-> int:
         return self.descending_time
+
+    def add_time(self, seconds):
+        self.descending_time += seconds

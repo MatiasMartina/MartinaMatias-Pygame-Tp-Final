@@ -25,7 +25,7 @@ class Bala(pg.sprite.Sprite):
         self.move_x = speed
         self.move_y = 0
         self.explosion_played = False
-
+        
     def update(self, delta_ms, plataform_list, enemy_list, player):
         self.tiempo_transcurrido_move += delta_ms
         if self.tiempo_transcurrido_move >= self.move_rate_ms:

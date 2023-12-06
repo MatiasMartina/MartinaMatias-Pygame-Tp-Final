@@ -1,3 +1,4 @@
+import sys
 import pygame as pg
 from models.auxiliar import SurfaceManager as sf
 from models.constantes import ANCHO_VENTANA, ALTO_VENTANA, GROUND_COLLIDE_H, GROUND_LEVEL
@@ -51,20 +52,18 @@ class Jugador:
         self.__on_ground = False
         self.__on_platform = False
         self.__is_looking_right = True 
-        self.__lifes = 3
-        self.max_lifes = 3
-        self.current_lifes = self.max_lifes
+        self.lifes = 3
+        self.max_lifes = 5
+        self.current_lifes = self.lifes
         self.score = 0
         self.__score = 0
         self.__stay = True
         self.__shot_cooldown = 1000  # Cooldown in milliseconds
         self.__last_shot_time = pg.time.get_ticks()
 
-
-
-        
-
-        self.collition_rect = pg.Rect(self.__move_x+self.__rect.width/12,self.__move_y,self.__rect.width/12,self.__rect.height/2)
+        self.collition_rect = pg.Rect(self.__move_x + self.__rect.width / 8 , 
+                                      self.__move_y + self.__rect.height  / 8,
+                                      self.__rect.width / 2, self.__rect.height / 2)
         self.ground_collition_rect = pg.Rect(self.collition_rect)
         self.ground_collition_rect.height = GROUND_COLLIDE_H
         self.ground_collition_rect.y = self.__move_y + self.__rect.height - GROUND_COLLIDE_H
@@ -310,7 +309,9 @@ class Jugador:
                 self.__actual_animation = self.__jump_r if self.__is_looking_right else self.__jump_l
                 self.__initial_frame = 0 
             
-        
+    def fished_level(self):
+        sys.exit()
+        pass
                 
         
     def __set_edges_limits_x(self):
@@ -420,7 +421,7 @@ class Jugador:
     
     def draw(self, screen = pg.surface.Surface):
         if(DEBUG):
-            pg.draw.rect(screen,color=(255,0 ,0),rect = self.__rect)
+            pg.draw.rect(screen,color=(255,0 ,0),rect = self.collition_rect)
             pg.draw.rect(screen,color=(255,255,0),rect= self.ground_collition_rect)
             pg.draw.rect(screen, color=(0, 0, 255), rect=self.__ground_rect)
 
@@ -437,10 +438,17 @@ class Jugador:
 
     
     
-    @property
-    def get_score_value(self):
-        return self.__score
+    # @property
+    # def get_score_value(self):
+    #     return self.__score
     
+    def set_move_x(self, new_move_x):
+            """
+            Establece el valor de __move_x.
 
+            Args:
+                new_move_x (float): Nuevo valor para __move_x.
+            """
+            self.__speed_run = new_move_x *1.5
+            self.__speed_walk = new_move_x
         
-    

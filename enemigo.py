@@ -47,6 +47,7 @@ class Enemy(pg.sprite.Sprite):
         self.__is_shoot = False
         self.__is_dead = False
         self.__is_active = True
+        self.inmune = False
 
         self.__is_looking_right = True
         self.__shoot_contact = False
@@ -166,11 +167,16 @@ class Enemy(pg.sprite.Sprite):
         return self.__shoot_contact
 
     def detect_player_colision(self, player, enemies_list):
-        if self.rect.colliderect(player.collition_rect):    
-            player.current_lifes -= 1
-            self.kill()
-            if self in enemies_list:
-                enemies_list.remove(self)   
+        print("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+        if self.inmune:
+            player.current_lifes += 0
+        else:
+            if self.rect.colliderect(player.collition_rect):    
+                print("1111111111111111111111111111111111111111111111111111111111")
+                player.current_lifes -= 1
+                self.kill()
+                if self in enemies_list:
+                    enemies_list.remove(self)   
             return True                        
                     
                     
