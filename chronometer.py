@@ -1,7 +1,7 @@
 import pygame
 
 WHITE = "White"
-BLACK= "Black"
+BLACK = "Black"
 
 class Chronometer:
     def __init__(self, initial_time) -> None:
@@ -13,18 +13,23 @@ class Chronometer:
         self.colour = WHITE
 
     def update(self):
-        if self.stoped == False:
+        if not self.stoped:
             time_elapsed = pygame.time.get_ticks() - self.actual_time
             if time_elapsed >= 1000:
                 self.actual_time = pygame.time.get_ticks()
                 self.descending_time -= 1  # Resta 1 segundo en lugar de sumar 1
-
+                if self.descending_time <= 0:
+                    self.stoped = True
+                    self.colour = BLACK  # Cambia el color a negro cuando el tiempo llega a cero
 
     def draw(self, screen):
-        chronometer = self.source.render(f"0{self.minutes} : {str(self.descending_time).zfill(2)}", False, self.colour)
-        screen.blit(chronometer, (870, 6))
+        if self.descending_time > 0:
+            chronometer = self.source.render(f"0{self.minutes} : {str(self.descending_time).zfill(2)}", False, self.colour)
+        else:
+            chronometer = self.source.render("Time's up!", False, self.colour)
+        screen.blit(chronometer, (10, 100))
 
-    def get_time(self)-> int:
+    def get_time(self) -> int:
         return self.descending_time
 
     def add_time(self, seconds):
