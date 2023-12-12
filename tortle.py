@@ -111,6 +111,7 @@ class Turtle(pg.sprite.Sprite):
 			self.kill()
 			if player.current_lifes > 0:
 				player.current_lifes -= 1
+				player.score +=100
 				if player.current_lifes >1:
 					player.restart_position()
 			

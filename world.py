@@ -58,7 +58,7 @@ class World():
 					# trap_list.append(trap)
 				if tile == 8:
 					key = Key(col_count * TILE_SIZES, row_count * TILE_SIZES+ (TILE_SIZES//3))
-					key_list.append(key)
+					key_list.add(key)
 				col_count += 1
 			row_count += 1
 	def draw(self,screen):

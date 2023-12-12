@@ -1,3 +1,4 @@
+from models.constantes import DEBUG_FORM_EXIT, MAIN_MENU
 import pygame
 from pygame.locals import *
 from GUI_button import *
@@ -19,64 +20,26 @@ from level import Level
 
     
 class FormPrueba(Form):
-    
-    
-    def __init__(self, screen: pygame.Surface, x: int, y: int, w:int, h: int, color_background, color_border = "Black", border_size: int = -1, active = True):
+    def __init__(self, screen: pygame.Surface, x: int, y: int, w:int, h: int, color_background, color_border = "Black", border_size: int = -1, active = True, main_running = None):
     
         super().__init__(screen, x,y,w,h,color_background, color_border, border_size, active)
-
+        self.main_running = main_running
         self.flag_play = True
         
-        # self.volumen = 0.2
-                
-        # pygame.mixer.init()
         
-        # pygame.mixer.music.load(r"Recursos\Vengeance (Loopable).wav")
         
-        # pygame.mixer.music.set_volume(self.volumen)
-        
-        # pygame.mixer.music.play(-1)
-        
-
-
-        # self.txt_nombre = TextBox(self._slave, x, y, 
-        #                           50, 50, 150, 30, 
-        #                           "gray","white","red","blue",2,
-        #                           "Comic Sans MS", 15, "black")
-        
-        self.btn_play = Button(self._slave, x, y, 100, 200,
-                                100, 50,
-                                "green", "blue",
-                                self.btn_start_click, "",
-                                "Play", "Verdana", 15, "white"
-                                )
-        
-
+        self.btn_start =   Button(self._slave, 100, 100, 300, 100, 200, 50, "green", "blue", self.btn_start_click, "", "Play", "Verdana", 15, "white")
+        self.btn_restart = Button(self._slave, 200, 300 , 300, 300, 200, 50, "green", "red", self.btn_start_click, "", "Restart", "Verdana", 15, "white")
+        self.btn_exit =    Button(self._slave, 300, 500, 300, 500, 200, 50, "green", "green", self.btn_exit_click, "", "Exit", "Verdana", 15, "white")
         #AGREGO A LA LISTA WIDGET
 
-        self.lista_widgets.append(self.btn_play)
         
         
-        # self.slider_volumen = Slider(self._slave, x, y, 100,200, 500, 15, self.volumen, 
-        #                              "blue", "white")
-        
-        
-        
-        # porcentaje_volumen = f"{self.volumen * 100}%"
-        # self.label_volumen = Label(self._slave,650,190, 100, 50, porcentaje_volumen,
-        #                            "Comic Sans MS", 15,"white", "Recursos\Table.png")
-        
-        
-        # self.btn_tabla = Button_Image(self._slave, x, y, 225,100, 50, 50, "Recursos\Menu_BTN.png", 
-        #                               self.btn_tabla_click, "")
-        
-        
-        
-        # self.lista_widgets.append(self.txt_nombre)
-        self.lista_widgets.append(self.btn_play)
-        # self.lista_widgets.append(self.slider_volumen)
-        # self.lista_widgets.append(self.label_volumen)
-        # self.lista_widgets.append(self.btn_tabla)
+       
+        self.lista_widgets.append(self.btn_start)
+        self.lista_widgets.append(self.btn_restart)
+        self.lista_widgets.append(self.btn_exit)
+                
         
     
     
@@ -97,17 +60,12 @@ class FormPrueba(Form):
         else:
             self.hijo.update(lista_eventos)
 
-    # def update_volumen(self, lista_eventos):
-    #     self.volumen = self.slider_volumen.value
-    #     self.label_volumen.update(lista_eventos)
-    #     self.label_volumen.set_text(f"{round(self.volumen * 100)}%")
-    #     pygame.mixer.music.set_volume(self.volumen)
-        
+    
       
     def btn_start_click(self, param):
         if self.flag_play:
             enemies_list = pg.sprite.Group()
-            level_start = Level(ACTUAL_LEVEL)  
+            level_start = Level(actual_level)  
             coins_list = []
             trap_list  = []
             bullet_list = []
@@ -116,7 +74,20 @@ class FormPrueba(Form):
             world_data = level_start.load_level()
             world = World(world_data, enemies_list, coins_list, trap_list, key_list)
             
-            
+
+    def btn_exit_click(self, param):
+        if DEBUG_FORM_EXIT:
+            print("EXIT")
+        if self.flag_play:
+            print("EXIT")
+            if self.main_running:
+                self.main_running[0] = False
+
+    def btn_start_click(self, param):
+        if DEBUG_FORM_EXIT:
+            print("START")
+        if self.flag_play:
+            MAIN_MENU = False
 
 
     def btn_play_click_music(self, param):
@@ -135,24 +106,3 @@ class FormPrueba(Form):
         self.flag_play = not self.flag_play
         
     
-    # def btn_tabla_click(self, param):
-    #     diccionario = [{"Jugador": "Mario", "Score": 100},
-    #                    {"Jugador": "Gio", "Score": 150},
-    #                    {"Jugador": "Uriel", "Score": 250}]
-        
-    #     nuevo_form = FormMenuScore(screen = self._master,
-    #                                x = 250,
-    #                                y = 25,
-    #                                w = 500,
-    #                                h = 550,
-    #                                color_background = "green",
-    #                                color_border = "gold",
-    #                                active = True,
-    #                                path_image = "Recursos\Window.png",
-    #                                scoreboard = diccionario,
-    #                                margen_x = 10,
-    #                                margen_y = 100,
-    #                                espacio = 10
-    #                                )
-
-        # self.show_dialog(nuevo_form)#Modal

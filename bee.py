@@ -61,7 +61,8 @@ class Bee(pg.sprite.Sprite):
 		
 	def enemies_generator(self, ):
 		new_enemy = Bee(200, 200,1, self.group)
-		print("ENEMIGO GENERADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+		if DEBUG_ENEMY:
+			print("ENEMIGO GENERADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
 		self.group.add(new_enemy)
 
 	def control_movement_y(self, world):
@@ -105,6 +106,7 @@ class Bee(pg.sprite.Sprite):
 			self.kill()
 			if player.current_lifes >0:
 				player.current_lifes -= 1
+				player.score +=100
 				if player.current_lifes >1:
 					player.restart_position()
 			

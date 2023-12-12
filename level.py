@@ -1,4 +1,4 @@
-from models.constantes import DEBUG_LEVEL, ACTUAL_LEVEL
+from models.constantes import DEBUG_LEVEL, actual_level
 import csv
 class Level():
     def __init__(self, level):
@@ -8,8 +8,10 @@ class Level():
         
         pass
 
+
+#Agregar un parámetro
     def load_level(self):
-        filename = f'level{ACTUAL_LEVEL}.csv'
+        filename = f'level{actual_level}.csv'
         if DEBUG_LEVEL:
             print(f'self.level: (Tras inicio de la carga){self.level}')
         with open(filename, 'r', encoding='utf-8') as csv_file:

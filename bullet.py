@@ -46,8 +46,8 @@ class Bala(pg.sprite.Sprite):
                     else:
                         self.explosion_played = True
                         # No eliminar la instancia aquí
-            
-            print(f"is active?{self._is_active}")
+            if DEBUG_BULLET:
+                print(f"is active?{self._is_active}")
 
     def check_impact(self, tile_list, enemy_list, player,world):
         if DEBUG_BULLET:

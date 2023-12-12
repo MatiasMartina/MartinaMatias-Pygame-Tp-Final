@@ -1,4 +1,4 @@
-from models.constantes import  TILE_SIZES, DEBUG, DEBUG_TRAP, DEBUG_KEY, ACTUAL_LEVEL
+from models.constantes import  TILE_SIZES, DEBUG, DEBUG_TRAP, DEBUG_KEY, actual_level
 import pygame as pg
 
 
@@ -15,16 +15,21 @@ class Key(pg.sprite.Sprite):
         self.rect.y = y
         
     def detect_collisions(self, player):
-        global ACTUAL_LEVEL
+        global actual_level
         if self.rect.colliderect(player.rect_collision):
+            
+            self.kill()
             if DEBUG_KEY:
                     print("1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111A")
-            self.kill()
             if player.current_lifes>0:
                 if DEBUG_KEY:
                     print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            
                 player.score +=300
-                ACTUAL_LEVEL +=1
+                actual_level +=1
+                
+                if DEBUG_KEY:
+                    print(f"{actual_level}")
         pass
 
     def update(self, screen, player):
