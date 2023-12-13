@@ -6,7 +6,7 @@ from models.constantes import  actual_level, FPS
 from chronometer import Chronometer
 from GUI_form_main import FormPrueba
 from world import World
-class Level1(Game):
+class Level2(Game):
     def __init__(self, screen:pg.Surface) -> None:
 
         width = screen.get_width()

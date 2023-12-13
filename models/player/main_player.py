@@ -350,6 +350,17 @@ class Jugador():
         movement_in_x = 0
         movement_in_y = 0
         if game_over == 0:
+        #     if isinstance(key_get_pressed, dict):
+        # # Verificar la existencia de las teclas antes de acceder a ellas
+        #         left_key_pressed = key_get_pressed.get(pg.K_LEFT, False)
+        #         right_key_pressed = key_get_pressed.get(pg.K_RIGHT, False)
+
+        #         if not left_key_pressed and not right_key_pressed and not self.__is_jumping:
+        #             # Resto del código
+        #             pass
+        #     else:
+                
+        #         print("key_get_pressed no es un diccionario:", key_get_pressed)
             if not key_get_pressed[pg.K_LEFT] and not key_get_pressed[pg.K_RIGHT] and not self.__is_jumping:
                 movement_in_x = self.stay()
             if key_get_pressed[pg.K_LEFT]:
@@ -459,18 +470,18 @@ class Jugador():
         self.draw(screen)
         self.draw_player_lives(screen)
         self.draw_score(screen)
-        #UPDATE PLAYER COORDINATES
         go = self.check_player_alive()
         self.movement_control(key_get_pressed, delta_ms, world, trap_list, bullet_list, go)
+        #UPDATE PLAYER COORDINATES
         #ANIMATION
         self.do_animation(delta_ms)
-        return go
         if DEBUG:
             print(f"X = {self.__rect.x}, Y = {self.__rect.y}")
             print(f"is jumping?: {self.__is_jumping}")
             print(f"on ground?: {self.__on_ground}")
             print(f"is on platform?: {self.__on_platform}")
             print(f"is looking right?: {self.__is_looking_right}")
+        return go
 
     def draw_player_lives(self, screen):
         font = pg.font.Font(None, 36)
