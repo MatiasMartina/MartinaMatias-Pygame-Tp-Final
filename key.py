@@ -13,10 +13,14 @@ class Key(pg.sprite.Sprite):
         self.rect_top = self.rect.top
         self.rect.x = x
         self.rect.y = y
+        self.sound_key = pg.mixer.Sound(r"sounds\Key.mp3")
+		
         self.capture_key = False
     def detect_collisions(self, player):
         global actual_level
         if self.rect.colliderect(player.rect_collision):
+            self.sound_key.set_volume(0.2)
+            self.sound_key.play()
             player.capture_key = True
             self.kill()
             if DEBUG_KEY:

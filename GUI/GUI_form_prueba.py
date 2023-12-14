@@ -1,16 +1,18 @@
+import sqlite3
 import pygame
 from pygame.locals import *
 from options_menu import FormMenuOptions
-from GUI_button import *
-from GUI_slider import *
-from GUI_textbox import *
-from GUI_label import *
-from GUI_form import *
-from GUI_button_image import *
-from GUI_form_menu_score import *
+from GUI.GUI_button import *
+from GUI.GUI_slider import *
+from GUI.GUI_textbox import *
+from GUI.GUI_label import *
+from GUI.GUI_form import *
+from GUI.GUI_button_image import *
+from GUI.GUI_form_menu_score import *
 from play_menu import FormMenuPlay
-from GUI_form_level_container import Level_container
+from GUI.GUI_form_level_container import Level_container
 from level_manager import Level_manager
+from models.constantes import *
 class FormPruebas(Form):
     
     
@@ -76,42 +78,85 @@ class FormPruebas(Form):
 
     
     def btn_tabla_click(self, param):
-        print("adentro")
-        diccionario = [{"Jugador": "Mario", "Score": 100},
-                       {"Jugador": "Gio", "Score": 150},
-                       {"Jugador": "Uriel", "Score": 250}]
-        
-        nuevo_form = FormMenuScore(screen = self._master,
-                                   x = 250,
-                                   y = 25,
-                                   w = 500,
-                                   h = 550,
-                                   color_background = "green",
-                                   color_border = "gold",
-                                   active = True,
-                                   path_image = "Recursos\Window.png",
-                                   scoreboard = diccionario,
-                                   margen_x = 10,
-                                   margen_y = 100,
-                                   espacio = 10
-                                   )
-    
+        nombre = self.txt_nombre.get_text()  # insert nombre
+        ultimo_score = list()
 
-        self.show_dialog(nuevo_form)#Modal
-    
+        # ACCEDO AL ULTIMO SCORE
+        archivo = open("score.txt", "r")
+        for linea in archivo:
+            ultimo_score.append(linea)
+        archivo.close()
+
+        # INSERTO EN BD
+        with sqlite3.connect("BAMEAPRO.db") as conexion:
+            print("Conexión a la base de datos establecida")
+            try:
+                print("entre", nombre, ultimo_score[0])
+                # Crear la tabla si no existe
+                conexion.execute('''
+                    CREATE TABLE IF NOT EXISTS score (
+                        nombre TEXT,
+                        score INTEGER
+                    )
+                ''')
+
+                # Insertar datos
+                sentencia = 'INSERT INTO score (nombre, score) VALUES (?, ?)'
+                conexion.execute(sentencia, (nombre, ultimo_score[0]))
+                conexion.commit()
+
+                print("Sentencia ejecutada correctamente")
+
+            except Exception as e:
+                print(f"Error en Base de datos: {e}")
+
+        dic_score = list()
+
+        with sqlite3.connect("BAMEAPRO.db") as conexion:
+            try:
+                sentencia = '''
+                    SELECT * FROM score ORDER BY score DESC LIMIT 3
+                '''
+                cursor = conexion.execute(sentencia)
+                for fila in cursor:
+                    print("select")
+                    dic_score.append({"jugador": f"{fila[0]}", "Score": f"{fila[1]}"})
+                print("Tabla creada")
+            except Exception as e:
+                print(f"Error en Base de datos: {type(e)}")
+
+        form_puntaje = FormMenuScore(self._master, 300, 50, 500, 500, (220, 0, 220), "white", True,
+                                     r'Recursos\\Window.png', dic_score, 100, 10, 10)
+        self.show_dialog(form_puntaje)
+
     def btn_level_click(self, param):
         print("adentro")
-    
-        frm_levels =  FormMenuPlay(screen=self._master,
-                                   x = 250,
-                                   y = 25,
-                                   w = 500,
-                                   h = 500,
-                                   color_background= (220,0,220),
-                                   color_border= (255,255,255),
-                                   active = True,
-                                   path_image= 'assets\img\lvl\Window.png')
+
+        frm_levels = FormMenuPlay(screen=self._master,
+                                  x=250,
+                                  y=25,
+                                  w=500,
+                                  h=500,
+                                  color_background=(220, 0, 220),
+                                  color_border=(255, 255, 255),
+                                  active=True,
+                                  path_image='assets\img\lvl\Window.png')
         self.show_dialog(frm_levels)
+
+        
+    # def btn_level_click(self, param):
+    #     print("adentro")
+    
+    #     frm_levels =  FormMenuPlay(screen=self._master,
+    #                                x = 250,
+    #                                y = 25,
+    #                                w = 500,
+    #                                h = 500,
+    #                                color_background= (220,0,220),
+    #                                color_border= (255,255,255),
+    #                                active = True,
+    #                                path_image= 'assets\img\lvl\Window.png')
+    #     self.show_dialog(frm_levels)
 
     def botn_start(self, level_name):
         print("adentro")
@@ -119,23 +164,26 @@ class FormPruebas(Form):
         nivel = self.level_manager.get_level('level_one')
         print(f"nivel{nivel}")
         # Obtiene el nombre de usuario desde la caja de texto
-        # username = self.txt_nombre.get_text()
-
-        # # Establece el nombre de usuario directamente en el jugador
+        username = self.txt_nombre.get_text()
+        # self.save_name(username)
+        
+        # # # Establece el nombre de usuario directamente en el jugador
         # self.player.username = username
+        # print(f'{self.player.username}')
         frm_level_container = Level_container(self._slave, nivel)
         self.show_dialog(frm_level_container)
         self.btn_home = Button_Image(screen= self._slave,
-                                     x = 400,
-                                     y = 400,
                                      master_x= self._x,
                                      master_y= self._y,
-                                     w = 50,
-                                     h = 50,
+                                     x = self._w,
+                                     y = self._h,
+                                     w = 600,
+                                     h = 600,
                                      onclick=self.btn_home_click,
                                      onclick_param= "",
                                      path_image= 'assets\img\lvl\home.png')
 
+        self.lista_widgets.append(self.btn_home)
         
 
     def botn_option(self, param):
@@ -156,3 +204,5 @@ class FormPruebas(Form):
 
     def btn_home_click(self):
         self.end_dialog()
+
+    

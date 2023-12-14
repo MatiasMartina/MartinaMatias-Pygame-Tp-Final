@@ -6,7 +6,7 @@ from level import Level
 from models.player.main_player import Jugador
 from models.constantes import  actual_level, FPS
 from chronometer import Chronometer
-from GUI_form_main import FormPrueba
+from GUI.GUI_form_main import FormPrueba
 from world import World
 class Level1(Game):
     def __init__(self, screen:pg.Surface) -> None:
@@ -30,7 +30,7 @@ class Level1(Game):
         player = Jugador(50, 650, frame_rate=1, speed_walk=5, speed_run=10, gravity=5, delta_ms=1, speed_jump=50)
         level_start = Level(1)
         enemies_list = pg.sprite.Group()
-        coins_list = []
+        coins_list = pg.sprite.Group()
         trap_list = []
         bullet_list = []
         key_list = pg.sprite.Group()
@@ -66,6 +66,7 @@ class Level1(Game):
         if self.is_active:
             super().update(event_list)
             if self.player.capture_key:
+                self.save_game1()
                 self.cargar_nivel_dos(event_list)
                 self.total_points += self.player.score  
                 self.is_active = False

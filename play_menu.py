@@ -1,7 +1,7 @@
-from GUI_form import *
-from GUI_form_level_container import Level_container
+from GUI.GUI_form import *
+from GUI.GUI_form_level_container import Level_container
 from level_manager import Level_manager 
-from GUI_button_image import Button_Image
+from GUI.GUI_button_image import Button_Image
 from level import Level
 from world import World
 class FormMenuPlay(Form):

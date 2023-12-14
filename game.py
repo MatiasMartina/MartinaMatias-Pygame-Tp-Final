@@ -3,8 +3,8 @@ import sqlite3
 from world import World
 import pygame as pg
 from models.constantes import MAIN_MENU, DEBUG_LEVEL, DEBUG_WORLD, ALTO_VENTANA, ANCHO_VENTANA
-from GUI_form import Form
-from GUI_button_image import Button_Image
+from GUI.GUI_form import Form
+from GUI.GUI_button_image import Button_Image
 class Game():
     def __init__(self, level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background) -> None:
         self.level_start = level_start  
@@ -40,6 +40,11 @@ class Game():
     def update_keys(self):
          for key in self.key_list:
                 key.update(self.slave, self.player)
+    def update_coins(self):
+        for coins in self.coins_list:
+                coins.update(self.slave, self.player)
+    
+    
     def update_bullets(self):
         for bullet in self.bullet_list:
             if self.game_over == 0:
@@ -49,6 +54,7 @@ class Game():
         self.chronometer.update()
         self.chronometer.draw(self.slave)
     def update_all_objetcs(self):
+        self.update_coins()
         self.update_enemies()
         self.update_traps()
         self.update_keys()
@@ -73,22 +79,17 @@ class Game():
     #         return True
     #     return False
     def update(self,event_list):#, paused):
-        # if not paused:
-        
-
-
         for evento in event_list:       
-            if evento == pg.KEYDOWN:
-                if evento.key == pg.K_P:
+            if evento.type == pg.KEYDOWN:
+                if evento.key == pg.K_p:
                     pg.time.delay(100)
         
         if self.player.current_lifes <= 0:
-           self.dead_player()
-           self.save_score()
+            self.dead_player()
+            self.save_score()  # Guardar puntaje en caso de perder
         else:
             if self.player.game_finished:
- 
-                self.save_score()
+                self.player_win()  # Guardar puntaje en caso de ganar
 
             else:   
                 print(f'{self.player.username}')
@@ -97,49 +98,78 @@ class Game():
                 self.update_player()
                 
                 # print(f"self total_pints: {self.total_points}")
+
+    def player_win(self):
+        if self.player.game_finished:
+            image = pg.image.load('assets\img\lvl\win.png')
+            image = pg.transform.scale(image,(ALTO_VENTANA, ANCHO_VENTANA))
+            self.slave.blit(image, (0,0))
+            self.player.sound_win.set_volume(0.2)
+            self.player.sound_win.play()
+
+
     def dead_player(self):
-        print("perdiste")
+        
+        print("Perdiste")
         image = pg.image.load('assets\img\lvl\gameover.jpg')
-        image = pg.transform.scale(image,(ALTO_VENTANA,ANCHO_VENTANA))  # Ajusta las dimensiones según sea necesario
+        image = pg.transform.scale(image, (ALTO_VENTANA, ANCHO_VENTANA))
         self.slave.blit(image, (0, 0))
-    
+        self.player.sound_game_over.set_volume(0.2)
+        self.player.sound_game_over.play()
+    def save_game1(self):
+        score = self.player.score
+
+        with open("score1.txt", "a") as archivo:
+            archivo.write(f"{score}\n")
+
+    def save_game2(self):
+        score = self.player.score
+
+        with open("score2.txt", "a") as archivo:
+            archivo.write(f"{score}\n")
+
+    def save_game3(self):
+        score = self.player.score
+
+        with open("score3.txt", "a") as archivo:
+            archivo.write(f"{score}\n")
+
+    def save_name(self, name):
+        self.player.username = name
     def save_score(self):
-        print("Guardar listado de promedio de rebotes por partido en SQLite ")
+        print("Guardar puntaje en SQLite")
         
         PATH = 'C:\\Users\\Mati\\'
-        # PATH = 'C:\\Users\\Mati\\Desktop\\PrimerParcial'
         nombre_del_archivo = 'BAMEAPRO.db'
 
-
-        with sqlite3.connect(f"{PATH}{nombre_del_archivo}") as conexion:
-            try:
-                sentencia = """
-                    create table score
-                    (
-                            id integer primary key autoincrement,
-                            nombre text,
-                            score real
-                    )
-                    """
-                conexion.execute(sentencia)
-                print("Se creo la tabla.")
-
-
-            except sqlite3.OperationalError:
-                 print("La tabla score ya existe.")
-            except sqlite3.Error as e:
-                 print("error al crear la tabla score", e)
-        nombre =""
-        
         try:
-            with conexion:
-                sentencia = "INSERT INTO score (nombre, score) VALUES (?, ?)"
-                conexion.execute(sentencia, (self.player.username, self.player.score))
-                print("Registro insertado correctamente.")
+            with sqlite3.connect(f"{PATH}{nombre_del_archivo}") as conexion:
+                cursor = conexion.cursor()
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS score (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nombre TEXT,
+                        score REAL
+                    )
+                ''')
+                print("Tabla creada o ya existente.")
+
+                if not self.player.is_saved:
+                    # Si el jugador no ha sido guardado aún, guardamos su puntaje
+                    try:
+                        with conexion:
+                            sentencia = "INSERT INTO score (nombre, score) VALUES (?, ?)"
+                            cursor.execute(sentencia, (self.player.username, self.player.score))
+                            print("Registro insertado correctamente.")
+                            self.player.is_saved = True  # Marcar al jugador como guardado
+
+                    except sqlite3.Error as e:
+                        print("Error al insertar en la tabla score:", e)
+
         except sqlite3.Error as e:
-            print("Error al insertar en la tabla score:", e)
-        
-        # try:
+            print("Error al conectar con la base de datos:", e)
+        #     self.player.is_saved = True
+        # # try:
         #     with sqlite3.connect("BAMEAPRO.db") as connection:
         #         cursor = connection.cursor()
         #         cursor.execute('''

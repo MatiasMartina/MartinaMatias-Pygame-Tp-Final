@@ -13,11 +13,14 @@ class Traps(pg.sprite.Sprite):
         self.rect_top = self.rect.top
         self.rect.x = x
         self.rect.y = y
-    
+        self.sound_hurt = pg.mixer.Sound(r"sounds\personaje_dolor.wav")
+		
     def detect_collisions(self, player):
         if DEBUG_TRAP:
             print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         if self.rect.colliderect(player.rect_collision):
+            self.sound_hurt.set_volume(0.2)
+            self.sound_hurt.play()
             if player.current_lifes>0:
                 player.current_lifes -= 1
                 if player.current_lifes >=1:

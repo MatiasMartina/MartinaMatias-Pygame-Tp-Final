@@ -57,6 +57,7 @@ class Jugador():
         ########################
         """FLAGS"""############
         ########################
+        self.is_saved = False
         self.__on_ground = False
         self.__on_platform = False
         self.__is_looking_right = True
@@ -64,6 +65,14 @@ class Jugador():
         self.__is_shooting = False
         self.capture_key = False
         self.game_finished = False
+        #######################
+        ## SOUNDS AND FXS
+        ######################  
+        self.shoot_sound = pg.mixer.Sound(r"sounds\\disparo.wav")
+        self.jump_sound = pg.mixer.Sound(r"sounds\jump.wav")
+        self.sound_game_over = pg.mixer.Sound(r"sounds\gameover.wav")
+        self.sound_win = pg.mixer.Sound(r'sounds\\win.mp3')
+       
         #######################
         ## SCORE AND LIFES
         ######################
@@ -128,11 +137,12 @@ class Jugador():
                 y,x = self.__set_and_animations_preset_y(-self.__speed_jump, self.__jump_r, True, delta_ms)
             else:
                 y,x = self.__set_and_animations_preset_y(-self.__speed_jump, self.__jump_l, False, delta_ms)
-
             
         else:   
             y= 0
             x = 0
+        self.jump_sound.set_volume(0.2)
+        self.jump_sound.play()
         return y, x
     def stay(self):
         if DEBUG_PLAYER:
@@ -340,6 +350,8 @@ class Jugador():
                     move_rate_ms=50)
                 bullet_list.append(bullet)        
             self.__is_shooting = False
+        self.shoot_sound.set_volume(0.2)
+        self.shoot_sound.play()
         pass
     def check_player_alive(self):
         if self.current_lifes <= 0:

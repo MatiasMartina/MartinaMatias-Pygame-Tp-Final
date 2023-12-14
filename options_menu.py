@@ -1,11 +1,11 @@
-from GUI_form import *
-from GUI_form_level_container import Level_container
+from GUI.GUI_form import *
+from GUI.GUI_form_level_container import Level_container
 from level_manager import Level_manager 
-from GUI_button_image import Button_Image
+from GUI.GUI_button_image import Button_Image
 from level import Level
 from world import World
-from GUI_slider import Slider
-from GUI_label import Label
+from GUI.GUI_slider import Slider
+from GUI.GUI_label import Label
 class FormMenuOptions(Form):
     def __init__(self, screen, x,y,w,h,color_background,color_border,active, path_image):
         super().__init__(screen,x,y,w,h,color_background, color_border,active)

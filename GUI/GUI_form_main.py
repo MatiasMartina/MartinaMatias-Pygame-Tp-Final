@@ -1,13 +1,13 @@
 from models.constantes import DEBUG_FORM_EXIT, MAIN_MENU
 import pygame
 from pygame.locals import *
-from GUI_button import *
-from GUI_slider import *
-from GUI_textbox import *
-from GUI_label import *
-from GUI_form import *
-from GUI_button_image import *
-from GUI_form_menu_score import *
+from GUI.GUI_button import *
+from GUI.GUI_slider import *
+from GUI.GUI_textbox import *
+from GUI.GUI_label import *
+from GUI.GUI_form import *
+from GUI.GUI_button_image import *
+from GUI.GUI_form_menu_score import *
 from models.player.main_player import Jugador
 from bee import Bee
 from turtle import Turtle

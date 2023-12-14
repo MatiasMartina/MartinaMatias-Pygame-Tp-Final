@@ -1,7 +1,8 @@
+
 import pygame as pg
 from pygame.locals import * 
-from GUI_form import *
-from GUI_button_image import *
+from GUI.GUI_form import *
+from GUI.GUI_button_image import *
 
 
 class Level_container(Form):
@@ -20,7 +21,8 @@ class Level_container(Form):
                                      onclick_param= "",
                                      path_image= 'assets\img\lvl\home.png')
         
-        
+        # self.game_over_form = GameOverForm(screen, 0, 0, 900, 1200, "Black", "yellow", 5, True)  # Instancia del formulario de Game Over
+        # self.show_game_over = False
         self.lista_widgets.append(self._btn_home)
         
         # self.lista_widgets.append(self._boton_home)

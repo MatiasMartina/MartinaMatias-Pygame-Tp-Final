@@ -1,9 +1,9 @@
 import pygame
 from pygame.locals import *
 
-from GUI_button_image import *
-from GUI_form import *
-from GUI_label import *
+from GUI.GUI_button_image import *
+from GUI.GUI_form import *
+from GUI.GUI_label import *
 
         
 class FormMenuScore(Form):

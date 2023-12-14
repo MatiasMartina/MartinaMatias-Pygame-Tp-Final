@@ -1,6 +1,7 @@
+from coins import Coin
 from traps import Traps
 import pygame as pg
-from models.constantes import TILE_SIZES, SCREEN_WIDTH,SCREEN_HEIGTH, DEBUG
+from models.constantes import TILE_SIZES, SCREEN_WIDTH,SCREEN_HEIGTH, DEBUG_COINS, DEBUG
 from tortle import Turtle
 from bee import Bee
 from key import Key
@@ -59,6 +60,11 @@ class World():
 				if tile == 8: #Nivel 1
 					key = Key(col_count * TILE_SIZES, row_count * TILE_SIZES+ (TILE_SIZES//3))
 					key_list.add(key)
+				if tile == 9: #Nivel 1
+					key = Coin(col_count * TILE_SIZES, row_count * TILE_SIZES+ (TILE_SIZES//3))
+					coins_list.add(key)
+					if DEBUG_COINS:
+						print(f"Coin creado en posición {key.rect.x}, {key.rect.y}")
 				col_count += 1
 			row_count += 1
 	def draw(self,screen):

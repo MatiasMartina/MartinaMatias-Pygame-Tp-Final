@@ -21,9 +21,14 @@ class Bee(pg.sprite.Sprite):
 		self.enemies_killed = 0
 		self.enemy_spawn_timer = 0
 		self.enemy_spawn_interval = 15
-		
 		self.__speed_walk = speed_walk
 		self.__actual_animation = self.__stay_r
+		
+		
+		######################
+		## Sound and fx
+		######################
+		self.sound_hurt = pg.mixer.Sound(r"sounds\personaje_dolor.wav")
 		######################
 		self.image1 = pg.image.load('assets\img\\title\\bee.png')
 		self.__initial_frame = 0
@@ -103,6 +108,8 @@ class Bee(pg.sprite.Sprite):
 		if DEBUG_ENEMY:
 			print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 		if self.rect.colliderect(player.rect_collision):
+			self.sound_hurt.set_volume(0.2)
+			self.sound_hurt.play()
 			self.kill()
 			if player.current_lifes >0:
 				player.current_lifes -= 1

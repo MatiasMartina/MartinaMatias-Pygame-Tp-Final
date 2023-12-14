@@ -6,8 +6,8 @@ from models.constantes import *
 from world import *
 from chronometer import Chronometer
 from level import Level
-from GUI_form_main import FormPrueba
-from GUI_form_prueba import FormPruebas
+from GUI.GUI_form_main import FormPrueba
+from GUI.GUI_form_prueba import FormPruebas
 from game import Game
 from level1 import Level1
 pg.init()
