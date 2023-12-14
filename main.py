@@ -28,7 +28,7 @@ while running:
     clock.tick(FPS)
     event_list = pg.event.get()
     screen.fill("Black")
-
+  
     for event in event_list:
         
         if event.type == QUIT:
@@ -36,11 +36,9 @@ while running:
         elif event.type == KEYDOWN:
             if event.key == K_p:
                 paused = not paused
+    
     form_main.update(event_list)
-    
 
-
-    
     pg.display.update()
-   
+    pg.display.flip()
 pg.quit()

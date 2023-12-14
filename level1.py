@@ -17,7 +17,7 @@ class Level1(Game):
         self.level_2 = None
         self.level_actual = 1
         self.is_active = True
-
+        
         img_background = pg.image.load('assets\img\\background\\background1.png')
         scaled_background = pg.transform.scale(img_background, (1200, 800))
         initial_time = 10  # 3 minutos inicialmente (puedes ajustar esto según tus necesidades)
@@ -39,10 +39,10 @@ class Level1(Game):
         # world = None
         tile_list = pg.sprite.Group
         running = True
-        paused = False
+        # paused = False
         form_main = FormPrueba(screen, 0, 0, 900, 1200, "cyan", "yellow", 5, True, running)
-        world_data = level_start.load_level()
-        world = World(world_data, enemies_list, coins_list, trap_list, key_list)
+        # world_data = level_start.load_level()
+        # world = World(world_data, enemies_list, coins_list, trap_list, key_list)
         delta_ms = clock.tick(FPS)
         # game = Game(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background)
         
@@ -56,7 +56,9 @@ class Level1(Game):
                 # return True    
 
     def cargar_nivel_dos(self, event_list):
+            # self.player.score += self.total_points
             self.level_2 = Level2(self.screen)
+            self.total_points = self.player.score
             self.nivel_actual = 2
             self.level_2.update(event_list)
             
@@ -65,6 +67,7 @@ class Level1(Game):
             super().update(event_list)
             if self.player.capture_key:
                 self.cargar_nivel_dos(event_list)
+                self.total_points += self.player.score  
                 self.is_active = False
         else:
             self.level_2.update(event_list)  

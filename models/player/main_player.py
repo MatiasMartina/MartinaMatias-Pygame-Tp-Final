@@ -53,6 +53,7 @@ class Jugador():
         self.__gravity = gravity
         self.__vel_y = 0
         self.current_lifes = 1
+        self.username = None
         ########################
         """FLAGS"""############
         ########################
@@ -62,7 +63,7 @@ class Jugador():
         self.__is_jumping = True        
         self.__is_shooting = False
         self.capture_key = False
-
+        self.game_finished = False
         #######################
         ## SCORE AND LIFES
         ######################

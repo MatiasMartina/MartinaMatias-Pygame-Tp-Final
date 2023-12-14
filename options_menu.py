@@ -15,6 +15,8 @@ class FormMenuOptions(Form):
         self._slave = image
         self.volumen = 0.2
         self.flag_play = True
+    
+
 
         self.slider_volumen = Slider(self._slave, x, y,100,300, 300,15, self.volumen, 
                                      "blue", "white")

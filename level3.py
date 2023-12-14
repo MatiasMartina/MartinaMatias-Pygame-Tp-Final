@@ -14,8 +14,10 @@ class Level3(Game):
         
         img_background = pg.image.load('assets\img\\background\\background1.png')
         scaled_background = pg.transform.scale(img_background, (1200, 800))
-
-
+        self.is_active = True
+        self.nivel_actual = 3
+        self.screen = screen
+        self.level_3 = None
 
         initial_time = 10  # 3 minutos inicialmente (puedes ajustar esto según tus necesidades)
 
@@ -36,14 +38,32 @@ class Level3(Game):
         # world = None
         tile_list = pg.sprite.Group
         running = True
-        paused = False
+        # paused = False
         form_main = FormPrueba(screen, 0, 0, 900, 1200, "cyan", "yellow", 5, True, running)
         world_data = level_start.load_level()
-        world = World(world_data, enemies_list, coins_list, trap_list, key_list)
+        # world = World(world_data, enemies_list, coins_list, trap_list, key_list)
         delta_ms = clock.tick(FPS)
-        game = Game(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background)
+        # game = Game(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background)
         
         # form_main = FormPrueba(screen, 0, 0, 900, 1200, "cyan", "yellow", 5, True, running) 
         # game = Game(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background, paused)    
         
         super().__init__(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player,delta_ms,bullet_list,tile_list, chronometer, form_main, scaled_background)
+
+    def win(self):
+        super().win_check()  # Verificar si el jugador ganó
+        # self.total_points += self.player.score  # Acumular puntos del jugador # Llamar al método para manejar el final del juego
+        print(f"Puntos acumulados: {self.total_points}")
+        print("¡Ganaste!")
+    
+
+    def update(self,event_list):
+        if self.is_active:
+            super().update(event_list)
+            if self.player.capture_key:
+                self.level_3 = Level3(self.screen)
+                self.total_points += self.player.score
+                self.is_active = False
+                self.player.game_finished = True
+        else:
+            self.level_3.update(event_list) 

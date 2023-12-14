@@ -32,51 +32,30 @@ class FormPruebas(Form):
         
         pygame.mixer.music.play(-1)
         
-
-
-        self.txt_nombre = TextBox(self._slave, x, y, 
-                                  300, 700, 150, 30, 
-                                  "gray","white","red","blue",2,
-                                  "Comic Sans MS", 15, "black")
-        
-        self.btn_play = Button(self._slave, x, y, 500, 500,
-                               0, 50,
-                               "red", "blue", 
-                               self. btn_play_click, "",
-                               "Pause", "Verdana",15, "white"
-                               )
-        
-        
-        self.slider_volumen = Slider(self._slave, x, y,0 ,00, 0, 15, self.volumen, 
-                                     "blue", "white")
-        
-        
-        
-        porcentaje_volumen = f"{self.volumen * 100}%"
-        self.label_volumen = Label(self._slave,650,190, 00, 0, porcentaje_volumen,
-                                   "Comic Sans MS", 15,"white", "Recursos\Table.png")
-        
-        
         self.btn_tabla = Button_Image(self._slave, x, y, 225,100, 50, 50, "Recursos\Menu_BTN.png", 
                                       self.btn_tabla_click, "")
         
-        self.btn_level = Button_Image(self._slave, x,y, 300, 300, 200,100, 'assets\img\lvl\lvls.png', self.btn_level_click, "")
+        self.btn_start = Button_Image(self._slave, x,y, 300, 300, 200,100, 'assets\img\lvl\start_btn.png', self.botn_start, "")
 
-        self.btn_start = Button_Image(self._slave, x,y, 300, 100, 200,100, 'assets\img\lvl\start_btn.png', self.botn_start, "")
+        self.btn_level = Button_Image(self._slave, x,y, 300, 450, 200,100, 'assets\img\lvl\lvls.png', self.btn_level_click, "")
         
-        self.btm_exit = Button_Image(self._slave, x,y, 300, 500, 200, 100, 'assets\img\lvl\exit_btn.png', self.btn_exit, "")
+        self.btm_exit = Button_Image(self._slave, x,y, 300, 600, 200, 100, 'assets\img\lvl\exit_btn.png', self.btn_exit, "")
 
         self.btn_option = Button_Image(self._slave,x,y, 100, 300, 50,50, 'assets\img\lvl\options.png', self.botn_option, "")
 
-        self.lista_widgets.append(self.txt_nombre)
-        self.lista_widgets.append(self.btn_play)
-        self.lista_widgets.append(self.slider_volumen)
-        self.lista_widgets.append(self.label_volumen)
+        self.txt_nombre = TextBox(self._slave, x, y, 
+                                  300, 100, 200, 50, 
+                                  "gray","white","red","blue",2,
+                                  "Comic Sans MS", 15, "black")
+        
+        
         self.lista_widgets.append(self.btn_tabla)
         self.lista_widgets.append(self.btn_level)
         self.lista_widgets.append(self.btn_start)
         self.lista_widgets.append(self.btm_exit)
         self.lista_widgets.append(self.btn_option)
+        self.lista_widgets.append(self.txt_nombre)
+
 
     def render(self):
         self._slave.fill(self._color_background)
@@ -90,34 +69,11 @@ class FormPruebas(Form):
                 self.render()
                 for widget in self.lista_widgets:
                     widget.update(lista_eventos)#POLIMORFISMO
-                self.update_volumen(lista_eventos)
+                # self.update_volumen(lista_eventos)
                 
         else:
             self.hijo.update(lista_eventos)
 
-    def update_volumen(self, lista_eventos):
-        self.volumen = self.slider_volumen.value
-        self.label_volumen.update(lista_eventos)
-        self.label_volumen.set_text(f"{round(self.volumen * 100)}%")
-        pygame.mixer.music.set_volume(self.volumen)
-        
-        
-    
-    def btn_play_click(self, param):
-        if self.flag_play:
-           pygame.mixer.music.pause()
-           self.btn_play._color_background = "blue"
-           
-           self.btn_play.set_text("Play")
-        else:
-            
-            pygame.mixer.music.unpause()
-            self.btn_play._color_background = "red"
-            self.btn_play.set_text("Pause")
-            
-        
-        self.flag_play = not self.flag_play
-        self.lista_widgets.append(self.btn_home) 
     
     def btn_tabla_click(self, param):
         print("adentro")
@@ -162,8 +118,25 @@ class FormPruebas(Form):
     
         nivel = self.level_manager.get_level('level_one')
         print(f"nivel{nivel}")
+        # Obtiene el nombre de usuario desde la caja de texto
+        # username = self.txt_nombre.get_text()
+
+        # # Establece el nombre de usuario directamente en el jugador
+        # self.player.username = username
         frm_level_container = Level_container(self._slave, nivel)
         self.show_dialog(frm_level_container)
+        self.btn_home = Button_Image(screen= self._slave,
+                                     x = 400,
+                                     y = 400,
+                                     master_x= self._x,
+                                     master_y= self._y,
+                                     w = 50,
+                                     h = 50,
+                                     onclick=self.btn_home_click,
+                                     onclick_param= "",
+                                     path_image= 'assets\img\lvl\home.png')
+
+        
 
     def botn_option(self, param):
         options = FormMenuOptions(screen=self._master,
@@ -179,4 +152,7 @@ class FormPruebas(Form):
         
     
     def btn_exit(self):
+        self.end_dialog()
+
+    def btn_home_click(self):
         self.end_dialog()
