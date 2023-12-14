@@ -25,7 +25,7 @@ class Level3(Game):
 
         # INSTANCIAMOS
         player = Jugador(50, 650, frame_rate=1, speed_walk=5, speed_run=10, gravity=5, delta_ms=1, speed_jump=50)
-        level_start = Level(1)
+        level_start = Level(3)
         enemies_list = pg.sprite.Group()
         coins_list = []
         trap_list = []

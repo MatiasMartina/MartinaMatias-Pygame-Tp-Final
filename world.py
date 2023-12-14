@@ -56,7 +56,7 @@ class World():
 					trap = Traps(col_count * TILE_SIZES, row_count * TILE_SIZES+ (TILE_SIZES//3))
 					trap_list.append(trap)
 					# trap_list.append(trap)
-				if tile == 8:
+				if tile == 8: #Nivel 1
 					key = Key(col_count * TILE_SIZES, row_count * TILE_SIZES+ (TILE_SIZES//3))
 					key_list.add(key)
 				col_count += 1

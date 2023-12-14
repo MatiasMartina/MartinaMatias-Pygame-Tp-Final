@@ -13,11 +13,11 @@ class Key(pg.sprite.Sprite):
         self.rect_top = self.rect.top
         self.rect.x = x
         self.rect.y = y
-        
+        self.capture_key = False
     def detect_collisions(self, player):
         global actual_level
         if self.rect.colliderect(player.rect_collision):
-            
+            player.capture_key = True
             self.kill()
             if DEBUG_KEY:
                     print("1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111A")
@@ -26,7 +26,8 @@ class Key(pg.sprite.Sprite):
                     print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             
                 player.score +=300
-                actual_level +=1
+                # actual_level +=1
+                self.capture_key = True
                 
                 if DEBUG_KEY:
                     print(f"{actual_level}")

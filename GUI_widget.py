@@ -19,6 +19,7 @@ class Widget:
         pass
     
     def update(self, lista_eventos):
+        self.draw()
         pass
     
     def draw(self):

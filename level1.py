@@ -1,3 +1,5 @@
+from level2 import Level2
+
 import pygame as pg
 from game import Game
 from level import Level
@@ -11,12 +13,13 @@ class Level1(Game):
 
         width = screen.get_width()
         height = screen.get_height()
-        
+        self.screen = screen
+        self.level_2 = None
+        self.level_actual = 1
+        self.is_active = True
+
         img_background = pg.image.load('assets\img\\background\\background1.png')
         scaled_background = pg.transform.scale(img_background, (1200, 800))
-
-
-
         initial_time = 10  # 3 minutos inicialmente (puedes ajustar esto según tus necesidades)
 
         chronometer = Chronometer(initial_time)
@@ -41,9 +44,31 @@ class Level1(Game):
         world_data = level_start.load_level()
         world = World(world_data, enemies_list, coins_list, trap_list, key_list)
         delta_ms = clock.tick(FPS)
-        game = Game(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background)
+        # game = Game(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background)
         
         # form_main = FormPrueba(screen, 0, 0, 900, 1200, "cyan", "yellow", 5, True, running) 
         # game = Game(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player, delta_ms, bullet_list, tile_list, chronometer, form_main, scaled_background, paused)    
         
         super().__init__(level_start, enemies_list, coins_list, trap_list, key_list, game_over, screen, player,delta_ms,bullet_list,tile_list, chronometer, form_main, scaled_background)
+        
+    # def win_check(self):
+    #         if self.player.capture_key:
+                # return True    
+
+    def cargar_nivel_dos(self, event_list):
+            self.level_2 = Level2(self.screen)
+            self.nivel_actual = 2
+            self.level_2.update(event_list)
+            
+    def update(self,event_list):
+        if self.is_active:
+            super().update(event_list)
+            if self.player.capture_key:
+                self.cargar_nivel_dos(event_list)
+                self.is_active = False
+        else:
+            self.level_2.update(event_list)  
+
+
+
+                

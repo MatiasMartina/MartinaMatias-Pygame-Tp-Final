@@ -63,14 +63,25 @@ class Game():
         if DEBUG_WORLD:
             self.world.draw_grid(self.slave)
         self.world.draw(self.slave)
+    
+    def win_check(self):
+        if self.player.capture_key:
+            return True
     def update(self,event_list):#, paused):
         # if not paused:
         
-        for evento in event_list:
-            
+
+
+        for evento in event_list:       
             if evento == pg.KEYDOWN:
                 if evento.key == pg.K_P:
                     pg.time.delay(100)
+
+       
+
+            #pasa de nivel
+            
+
         self.update_world()
         self.update_all_objetcs()
         self.update_player()

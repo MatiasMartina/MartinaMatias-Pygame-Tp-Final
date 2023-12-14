@@ -61,6 +61,7 @@ class Jugador():
         self.__is_looking_right = True
         self.__is_jumping = True        
         self.__is_shooting = False
+        self.capture_key = False
 
         #######################
         ## SCORE AND LIFES
@@ -454,7 +455,9 @@ class Jugador():
                         # self.__vel_y = 0
                         self.__on_platform = True
                         self.__is_jumping = False
+                        
         return movement_in_y, movement_in_x
+    
     def restart_position(self):
         self.__rect.x = 50
         self.__rect.y = 630

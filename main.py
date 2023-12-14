@@ -20,7 +20,7 @@ clock = pg.time.Clock()
 nivel_actual = Level1(screen)
 paused = False
 running = True
-form_main = FormPruebas(screen, 0, 0, 900, 1200, "cyan", "yellow", 5, True)
+form_main = FormPruebas(screen, 0, 0, 900, 1200, "Black", "yellow", 5, True)
 
 
 while running:
@@ -36,9 +36,9 @@ while running:
         elif event.type == KEYDOWN:
             if event.key == K_p:
                 paused = not paused
-
     form_main.update(event_list)
     
+
 
     
     pg.display.update()
